@@ -1,0 +1,12 @@
+Kebutuhan fungsional:
+- login (admin & penyewa)
+- membuat akun penyewa (admin)
+- tambah data penghuni (admin)
+- edit data penghuni (admin)
+- hapus data penghuni (admin)
+- lihat daftar penghuni (admin)
+- menentukan jumlah dan jadwal pembayaran (admin)
+- menandai status pembayaran (admin)
+- melihat riwayat pembayaran (admin)
+- melakukan pembayaran sesuai jadwal (penyewa)
+- menghubungi kontak admin (penyewa)
