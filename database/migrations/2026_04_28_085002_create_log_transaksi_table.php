@@ -25,8 +25,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Relasi
-            $table->foreign('id_tagihan')->references('id_tagihan')->on('tagihan')->onDelete('set null');
-            $table->foreign('id_waiting_list')->references('id_waiting_list')->on('waiting_list')->onDelete('set null');
+            $table->foreign('id_tagihan')->references('id')->on('tagihan')->onDelete('set null');
+            $table->foreign('id_waiting_list')->references('id')->on('waiting_list')->onDelete('set null');
         });
     }
 

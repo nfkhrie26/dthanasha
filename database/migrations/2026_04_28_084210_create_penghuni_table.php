@@ -9,11 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+   public function up(): void
     {
         Schema::create('penghuni', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_users')->nullable();
+            
+            // Relasi ke users (nullable kalau Owner baru nyatet data tapi belom buatin akun login)
+            $table->unsignedBigInteger('id_user')->nullable(); 
+            
+            // Relasi ke kamar (nullable buat antisipasi kalo anak kos pindah/keluar)
             $table->unsignedBigInteger('id_kamar')->nullable();
             
             $table->string('nama_penghuni');
@@ -23,7 +27,7 @@ return new class extends Migration
             $table->string('no_telepon_orangtua');
             $table->timestamps();
 
-            // Relasi Foreign Key
+            // Set Foreign Key
             $table->foreign('id_user')->references('id')->on('users')->onDelete('set null');
             $table->foreign('id_kamar')->references('id')->on('kamar')->onDelete('set null');
         });
