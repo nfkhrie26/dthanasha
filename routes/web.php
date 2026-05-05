@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PenghuniController;
-use App\Http\Controllers\Admin\WaitingListController; // <--- Controller baru buat CRUD Waiting List
+use App\Http\Controllers\Admin\WaitingListController;
+use App\Http\Controllers\Admin\KamarController;
+use App\Http\Controllers\Admin\PembayaranController; // <--- Tambahan import PembayaranController
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,24 +23,28 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 
     // ---> Route CRUD Data Penghuni <---
     Route::get('admin/data-penghuni', [PenghuniController::class, 'index'])->name('admin.data-penghuni');
-    Route::post('/tambah_akun', [PenghuniController::class, 'store']);
-    Route::delete('/hapus_penghuni', [PenghuniController::class, 'destroy']);
+    Route::post('/admin/tambah_akun', [PenghuniController::class, 'store']);
+    Route::put('/admin/edit_penghuni/{id}', [PenghuniController::class, 'update']);
+    Route::delete('/admin/hapus_penghuni/{id}', [PenghuniController::class, 'destroy']); // <-- Pastikan ada /{id}
 
     // ---> Route CRUD Waiting List <---
     Route::get('admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list');
-    Route::post('/tambah_waiting_list', [WaitingListController::class, 'store']);
-    Route::put('/edit_waiting_list', [WaitingListController::class, 'update']);
-    Route::delete('/hapus_waiting_list', [WaitingListController::class, 'destroy']);
+    Route::post('/admin/tambah_waiting_list', [WaitingListController::class, 'store']);
+    Route::put('/admin/edit_waiting_list/{id}', [WaitingListController::class, 'update']);
+    Route::delete('/admin/hapus_waiting_list/{id}', [WaitingListController::class, 'destroy']);
+
+    // ---> Route CRUD Manajemen Kamar <---
+    Route::get('admin/manajemen-kamar', [KamarController::class, 'index'])->name('admin.manajemen-kamar');
+    Route::post('/admin/tambah_kamar', [KamarController::class, 'store']);
+    Route::put('/admin/edit_kamar/{id}', [KamarController::class, 'update']);
+    Route::delete('/admin/hapus_kamar/{id}', [KamarController::class, 'destroy']);
+
+    // ---> Route Manajemen Pembayaran <---
+    Route::get('admin/pembayaran', [PembayaranController::class, 'index'])->name('admin.pembayaran');
+    Route::post('/admin/proses_pembayaran/{id}', [PembayaranController::class, 'konfirmasi']);
+    Route::get('/kirim_notifikasi', function () { return back(); }); // (Sementara biarkan back dulu sampai ada fitur notifnya)
 
     // --- Views Admin Lainnya ---
-    Route::get('admin/manajemen-kamar', function () {
-        return view('admin.manajemen_kamar');
-    })->name('admin.manajemen-kamar');
-
-    Route::get('admin/pembayaran', function () { 
-        return view('admin.pembayaran'); 
-    })->name('admin.pembayaran');
-
     Route::get('admin/riwayat', function () { 
         return view('admin.riwayat'); 
     })->name('admin.riwayat');
@@ -49,15 +55,6 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 
 
     // --- Action Admin Lainnya (Proses Form yang belum pakai Controller) ---
-    
-    // Manajemen Kamar
-    Route::post('/tambah_kamar', function () { return back(); });
-    Route::put('/edit_kamar', function () { return back(); });
-    Route::delete('/hapus_kamar', function () { return back(); });
-
-    // Manajemen Pembayaran
-    Route::post('/proses_pembayaran', function () { return back(); });
-    Route::get('/kirim_notifikasi', function () { return back(); });
 
     // Manajemen Riwayat Transaksi
     Route::post('/tambah_riwayat', function () { return back(); });

@@ -11,7 +11,22 @@
     <!-- Notifikasi Sukses/Gagal -->
     @if(session('success'))
         <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl font-bold text-sm flex items-center gap-2">
-            <i class="ph-fill ph-check-circle text-lg"></i> {{ session('success') }}
+            <i class="fas fa-check-circle text-lg"></i> {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- TAMBAHKAN KODE ERROR INI -->
+    @if ($errors->any())
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
+            <div class="flex items-center gap-2 mb-2 font-bold">
+                <i class="fas fa-exclamation-triangle text-lg"></i>
+                <span>Gagal menyimpan data! Cek kesalahan berikut:</span>
+            </div>
+            <ul class="list-disc pl-8 font-medium text-xs space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -65,17 +80,21 @@
                         <th class="px-6 py-4">Kontak</th>
                         <th class="px-6 py-4">No. Orangtua</th>
                         <th class="px-6 py-4">Nama Akun</th>
+                        <th class="px-6 py-4 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200">
                     @forelse($penghunis as $index => $p)
-                        <tr class="hover:bg-zinc-50 transition-colors cursor-pointer group" 
-                            onclick="bukaModalHapus('{{ $p->nama_penghuni }}', '{{ $p->usia }}', '-', '{{ $p->jenis_kelamin }}', '{{ $p->no_telepon }}', '{{ $p->no_telepon_orangtua }}', '{{ $p->user->username ?? '' }}')">
+                        <tr class="hover:bg-zinc-50 transition-colors group">
                             <td class="px-6 py-4 text-sm font-bold text-gray-400 text-center">{{ $index + 1 }}</td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900 group-hover:text-[#334155] transition-colors">{{ $p->nama_penghuni }}</td>
                             <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $p->usia }}</td>
                             <td class="px-6 py-4 text-center">
-                                <span class="bg-zinc-200 text-zinc-800 text-[11px] font-black px-2.5 py-1 rounded-md">-</span>
+                                @if($p->kamar)
+                                    <span class="bg-blue-100 text-blue-800 text-[11px] font-black px-2.5 py-1 rounded-md">{{ $p->kamar->nomor_kamar }}</span>
+                                @else
+                                    <span class="bg-zinc-200 text-zinc-800 text-[11px] font-black px-2.5 py-1 rounded-md">-</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500">{{ $p->no_telepon }}</td>
@@ -83,10 +102,14 @@
                             <td class="px-6 py-4">
                                 <span class="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded-lg border border-zinc-200">{{ '@' . ($p->user->username ?? 'tidak_ada') }}</span>
                             </td>
+                            <td class="px-6 py-4 flex justify-center gap-2">
+                                <button onclick="bukaModalEditPenghuni({{ $p->id }}, '{{ $p->nama_penghuni }}', '{{ $p->kamar_id }}')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"><i class="fas fa-edit"></i> Edit</button>
+                                <button onclick="bukaModalHapus({{ $p->id }}, '{{ $p->nama_penghuni }}', '{{ $p->usia }}', '{{ $p->kamar->nomor_kamar ?? '-' }}')" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-8 text-center text-sm font-bold text-zinc-400">Belum ada data penghuni. Silakan tambah data baru.</td>
+                            <td colspan="9" class="px-6 py-8 text-center text-sm font-bold text-zinc-400">Belum ada data penghuni. Silakan tambah data baru.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -109,7 +132,7 @@
     <div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
         <div class="bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
             <h2 class="text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Tambah Akun Baru</h2>
-            <form action="{{ url('/tambah_akun') }}" method="POST" class="space-y-4">
+            <form action="{{ url('/admin/tambah_akun') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Lengkap</label>
@@ -160,6 +183,35 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT PENGHUNI -->
+    <div id="modalEditPenghuni" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Edit Data Penghuni</h2>
+            <form id="formEditPenghuni" method="POST" class="space-y-4">
+                @csrf @method('PUT')
+                
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Penghuni</label>
+                    <!-- Sesuaikan attribute name dengan field yang ditangkap di Controller (misal 'nama') -->
+                    <input type="text" id="edit_nama" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Pilih Kamar</label>
+                    <select id="edit_kamar_id" name="kamar_id" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm">
+                        <!-- Option akan di-generate otomatis oleh JavaScript -->
+                    </select>
+                    <p class="text-[10px] text-zinc-400 mt-2 ml-1">*Hanya menampilkan kamar yang kosong.</p>
+                </div>
+
+                <div class="flex gap-3 pt-6 border-t border-zinc-100">
+                    <button type="button" onclick="tutupModal('modalEditPenghuni')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Update & Sinkron</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- MODAL DETAIL / HAPUS -->
     <div id="modalHapus" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
         <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto no-scrollbar">
@@ -167,12 +219,11 @@
                 <div class="w-16 h-16 bg-zinc-100 text-zinc-800 border border-zinc-200 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
                     <i class="fas fa-user"></i>
                 </div>
-                <h2 class="text-xl font-black text-gray-900 uppercase tracking-wide">Detail Penghuni</h2>
+                <h2 class="text-xl font-black text-gray-900 uppercase tracking-wide">Hapus Penghuni</h2>
             </div>
             
-            <form action="{{ url('/hapus_penghuni') }}" method="POST" class="space-y-4">
+            <form id="formHapusPenghuni" method="POST" class="space-y-4">
                 @csrf @method('DELETE')
-                <input type="hidden" id="hapus_id_akun" name="akun">
                 <div class="grid grid-cols-2 gap-4">
                     <div class="col-span-2">
                         <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-1">Nama</label>
@@ -188,7 +239,7 @@
                     </div>
                 </div>
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
-                    <button type="button" onclick="tutupModal('modalHapus')" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase">Kembali</button>
+                    <button type="button" onclick="tutupModal('modalHapus')" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase">Batal</button>
                     <button type="submit" class="flex-1 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 border border-red-100 transition-all active:scale-95 flex items-center justify-center gap-2 text-sm uppercase">
                         <i class="fas fa-trash-alt"></i> Hapus
                     </button>
@@ -200,14 +251,52 @@
 
 @section('scripts')
     <script>
-        function bukaModalTambah() { document.getElementById('modalTambah').classList.remove('hidden'); }
-        function bukaModalHapus(nama, usia, kamar, jk, kontak, ortu, akun) {
+        // Tangkap data semua kamar dari Controller, gunakan fallback array kosong jika tidak ada
+        const semuaKamar = @json($semuaKamar ?? []);
+
+        function bukaModalTambah() { 
+            document.getElementById('modalTambah').classList.remove('hidden'); 
+        }
+
+        // Fungsi Buka Modal Edit (Dengan Filter Kamar Kosong)
+        function bukaModalEditPenghuni(id, nama, kamarIdSaatIni) {
+            // Set action URL form Edit
+            document.getElementById('formEditPenghuni').action = '/admin/edit_penghuni/' + id;
+            document.getElementById('edit_nama').value = nama;
+
+            const selectKamar = document.getElementById('edit_kamar_id');
+            selectKamar.innerHTML = '<option value="">-- Tidak Memilih Kamar --</option>';
+
+            // Mapping kamar yang kosong atau kamar miliknya saat ini
+            semuaKamar.forEach(kamar => {
+                if (kamar.status_kamar === 'Kosong' || kamar.id == kamarIdSaatIni) {
+                    let option = document.createElement('option');
+                    option.value = kamar.id;
+                    option.text = `Kamar ${kamar.nomor_kamar} (${kamar.jenis_kamar})`;
+                    
+                    if (kamar.id == kamarIdSaatIni) {
+                        option.selected = true;
+                    }
+                    selectKamar.appendChild(option);
+                }
+            });
+
+            document.getElementById('modalEditPenghuni').classList.remove('hidden');
+        }
+
+        // Fungsi Buka Modal Hapus
+        function bukaModalHapus(id, nama, usia, kamar) {
+            // Set action URL form Hapus
+            document.getElementById('formHapusPenghuni').action = '/admin/hapus_penghuni/' + id;
+            
             document.getElementById('hapus_nama').value = nama;
             document.getElementById('hapus_usia').value = usia;
             document.getElementById('hapus_kamar').value = kamar;
-            document.getElementById('hapus_id_akun').value = akun;
             document.getElementById('modalHapus').classList.remove('hidden');
         }
-        function tutupModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
+
+        function tutupModal(modalId) { 
+            document.getElementById(modalId).classList.add('hidden'); 
+        }
     </script>
 @endsection
