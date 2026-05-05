@@ -32,25 +32,25 @@
             <a href="{{ route('admin.dashboard') }}" class="sidebar-link active-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold transition-all">
                 <i class="ph ph-squares-four text-lg"></i> Dashboard
             </a>
-            <a href="{{ url('/data_penghuni') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
+            <a href="{{ route('admin.data-penghuni') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
                 <i class="ph ph-users text-lg"></i> Data Penghuni
             </a>
-            <a href="{{ url('/waiting_list') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
+            <a href="{{ route('admin.waiting-list') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
                 <i class="ph ph-clock text-lg"></i> Waiting List
             </a>
-            <a href="{{ url('/manajemen_kamar') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
+            <a href="{{ route('admin.manajemen-kamar') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
                 <i class="ph ph-door text-lg"></i> Manajemen Kamar
             </a>
-            <a href="{{ url('/pembayaran') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
+            <a href="{{ route('admin.pembayaran') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
                 <i class="ph ph-receipt text-lg"></i> Pembayaran
             </a>
-            <a href="{{ url('/riwayat') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
+            <a href="{{ route('admin.riwayat') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all hover:text-white">
                 <i class="ph ph-clock-counter-clockwise text-lg"></i> Riwayat
             </a>
         </nav>
 
         <div class="p-6 border-t border-zinc-800">
-            <form action="{{ url('/logout') }}" method="POST">
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button class="flex items-center gap-3 text-sm font-medium hover:text-red-400 transition-all uppercase tracking-wider w-full">
                     <i class="ph ph-sign-out text-lg"></i> Keluar
