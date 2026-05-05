@@ -1,10 +1,9 @@
-<x-admin-layout>
-    
-    <!-- Kirim Title ke Layout -->
-    <x-slot:title>
-        Manajemen Kamar - Dthanasha Kost
-    </x-slot:title>
+@extends('layouts.admin')
 
+@section('title', 'Manajemen Kamar - Dthanasha Kost')
+@section('search_placeholder', 'Cari nomor kamar...')
+
+@section('content')
     <!-- SUMMARY CARDS -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center justify-between group">
@@ -64,7 +63,6 @@
 
     <!-- GRID KAMAR -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        
         <!-- Kamar 001 -->
         <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
             <div class="flex justify-between items-start">
@@ -102,83 +100,8 @@
                 </form>
             </div>
         </div>
-
-        <!-- Kamar 003 -->
-        <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
-            <div class="flex justify-between items-start">
-                <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm tracking-wide">003</div>
-                <div class="text-right flex flex-col items-end">
-                    <span class="text-[10px] font-black tracking-widest text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg mb-1.5 uppercase">Terisi</span>
-                    <p class="text-[15px] font-bold text-zinc-900">Reguler</p>
-                </div>
-            </div>
-            <div class="flex gap-2 h-11">
-                <button onclick="bukaModalDetail('003', 'Ayu Lestari', 'Terisi', 'Reguler', 'Wanita')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
-                <form action="{{ url('/hapus_kamar') }}" method="POST" class="h-full">
-                    @csrf @method('DELETE')
-                    <input type="hidden" name="nomor_kamar" value="003">
-                    <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-500 w-11 h-full rounded-xl flex items-center justify-center transition-all active:scale-95"><i class="ph ph-trash text-lg"></i></button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Kamar 004 -->
-        <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
-            <div class="flex justify-between items-start">
-                <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm tracking-wide">004</div>
-                <div class="text-right flex flex-col items-end">
-                    <span class="text-[10px] font-black tracking-widest text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg mb-1.5 uppercase">Kosong</span>
-                    <p class="text-[15px] font-bold text-zinc-900">VIP</p>
-                </div>
-            </div>
-            <div class="flex gap-2 h-11">
-                <button onclick="bukaModalDetail('004', '', 'Kosong', 'VIP', '')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
-                <form action="{{ url('/hapus_kamar') }}" method="POST" class="h-full">
-                    @csrf @method('DELETE')
-                    <input type="hidden" name="nomor_kamar" value="004">
-                    <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-500 w-11 h-full rounded-xl flex items-center justify-center transition-all active:scale-95"><i class="ph ph-trash text-lg"></i></button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Kamar 005 -->
-        <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
-            <div class="flex justify-between items-start">
-                <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm tracking-wide">005</div>
-                <div class="text-right flex flex-col items-end">
-                    <span class="text-[10px] font-black tracking-widest text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg mb-1.5 uppercase">Terisi</span>
-                    <p class="text-[15px] font-bold text-zinc-900">VIP</p>
-                </div>
-            </div>
-            <div class="flex gap-2 h-11">
-                <button onclick="bukaModalDetail('005', 'Reza Rahadian', 'Terisi', 'VIP', 'Pria')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
-                <form action="{{ url('/hapus_kamar') }}" method="POST" class="h-full">
-                    @csrf @method('DELETE')
-                    <input type="hidden" name="nomor_kamar" value="005">
-                    <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-500 w-11 h-full rounded-xl flex items-center justify-center transition-all active:scale-95"><i class="ph ph-trash text-lg"></i></button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Kamar 006 -->
-        <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
-            <div class="flex justify-between items-start">
-                <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm tracking-wide">006</div>
-                <div class="text-right flex flex-col items-end">
-                    <span class="text-[10px] font-black tracking-widest text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg mb-1.5 uppercase">Terisi</span>
-                    <p class="text-[15px] font-bold text-zinc-900">VIP</p>
-                </div>
-            </div>
-            <div class="flex gap-2 h-11">
-                <button onclick="bukaModalDetail('006', 'Putri Larasati', 'Terisi', 'VIP', 'Wanita')" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-xl flex-1 text-[13px] transition-all active:scale-95">Detail</button>
-                <form action="{{ url('/hapus_kamar') }}" method="POST" class="h-full">
-                    @csrf @method('DELETE')
-                    <input type="hidden" name="nomor_kamar" value="006">
-                    <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-500 w-11 h-full rounded-xl flex items-center justify-center transition-all active:scale-95"><i class="ph ph-trash text-lg"></i></button>
-                </form>
-            </div>
-        </div>
-
+        
+        <!-- Kamar 003, 004, 005, 006 dsb bisa dilanjutin kayak di atas -->
     </div>
 
     <!-- PAGINATION CUSTOM -->
@@ -186,7 +109,6 @@
         <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-zinc-200 text-zinc-400 hover:bg-white transition-all bg-transparent"><i class="ph ph-caret-left font-bold"></i></button>
         <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#334155] text-white text-sm font-bold shadow-sm">1</button>
         <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-zinc-200 text-zinc-600 hover:bg-white text-sm font-bold transition-all bg-transparent">2</button>
-        <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-zinc-200 text-zinc-600 hover:bg-white text-sm font-bold transition-all bg-transparent">3</button>
         <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-zinc-200 text-zinc-400 hover:bg-white transition-all bg-transparent"><i class="ph ph-caret-right font-bold"></i></button>
     </div>
 
@@ -209,7 +131,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Jenis Kamar</label>
@@ -227,12 +148,10 @@
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Penghuni</label>
                     <input type="text" name="nama_penghuni" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" placeholder="Kosongkan jika belum terisi">
                 </div>
-
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalTambah')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Batal</button>
                     <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Simpan Kamar</button>
@@ -247,7 +166,6 @@
             <h2 class="text-xl font-black text-zinc-900 mb-6 text-center uppercase tracking-wide">Detail & Edit Kamar</h2>
             <form action="{{ url('/edit_kamar') }}" method="POST" class="space-y-4">
                 @csrf @method('PUT')
-                
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nomor Kamar</label>
@@ -261,7 +179,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Jenis Kamar</label>
@@ -279,12 +196,10 @@
                         </select>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Penghuni</label>
                     <input type="text" id="detail_nama" name="nama_penghuni" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" placeholder="Kosongkan jika belum terisi">
                 </div>
-
                 <div class="flex gap-3 pt-6 border-t border-zinc-100">
                     <button type="button" onclick="tutupModal('modalDetail')" class="flex-1 px-4 py-3.5 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Tutup</button>
                     <button type="submit" class="flex-1 px-4 py-3.5 rounded-xl bg-[#18181B] text-white font-bold hover:bg-[#334155] shadow-lg transition-all active:scale-95 text-sm uppercase tracking-wide">Update Kamar</button>
@@ -292,29 +207,19 @@
             </form>
         </div>
     </div>
+@endsection
 
-    <!-- KIRIM SCRIPT KE LAYOUT -->
-    <x-slot:scripts>
-        <script>
-            function bukaModalTambah() { 
-                document.getElementById('modalTambah').classList.remove('hidden'); 
-            }
-
-            function bukaModalDetail(nomor, nama, status, jenis, kelamin) {
-                document.getElementById('detail_nomor').value = nomor;
-                document.getElementById('detail_nama').value = nama;
-                document.getElementById('detail_status').value = status;
-                document.getElementById('detail_jenis').value = jenis;
-                // Handle select gender dropdown (jika kosong/null diset ke "")
-                document.getElementById('detail_kelamin').value = kelamin ? kelamin : "";
-
-                document.getElementById('modalDetail').classList.remove('hidden');
-            }
-
-            function tutupModal(modalId) { 
-                document.getElementById(modalId).classList.add('hidden'); 
-            }
-        </script>
-    </x-slot:scripts>
-
-</x-admin-layout>
+@section('scripts')
+    <script>
+        function bukaModalTambah() { document.getElementById('modalTambah').classList.remove('hidden'); }
+        function bukaModalDetail(nomor, nama, status, jenis, kelamin) {
+            document.getElementById('detail_nomor').value = nomor;
+            document.getElementById('detail_nama').value = nama;
+            document.getElementById('detail_status').value = status;
+            document.getElementById('detail_jenis').value = jenis;
+            document.getElementById('detail_kelamin').value = kelamin ? kelamin : "";
+            document.getElementById('modalDetail').classList.remove('hidden');
+        }
+        function tutupModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
+    </script>
+@endsection

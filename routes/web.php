@@ -4,32 +4,32 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('login');
+    return view('auth.login');
 });
 
 Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('admin/dashboard', function () {
-        return view('dashboard_admin');
+        return view('admin.dashboard');
     })->name('admin.dashboard');
 
     Route::get('admin/data-penghuni', function () {
-        return view('data_penghuni');
+        return view('admin.data_penghuni');
     })->name('admin.data-penghuni');
 
     Route::get('admin/manajamen-kamar', function () {
-        return view('manajemen_kamar');
+        return view('admin.manajemen_kamar');
     })->name('admin.manajemen-kamar');
 
     Route::get('admin/waiting_list', function () { 
-        return view('waiting_list'); 
+        return view('admin.waiting_list'); 
     })->name('admin.waiting-list');
 
     Route::get('admin/pembayaran', function () { 
-        return view('pembayaran'); 
+        return view('admin.pembayaran'); 
     })->name('admin.pembayaran');
 
     Route::get('admin/riwayat', function () { 
-        return view('riwayat'); 
+        return view('admin.riwayat'); 
     })->name('admin.riwayat');
 
     // --- Manajemen Data Penghuni ---
@@ -55,9 +55,6 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
     });
 
     // --- Manajemen Kamar ---
-    Route::get('/manajemen_kamar', function () { 
-        return view('manajemen_kamar'); 
-    });
     Route::post('/tambah_kamar', function () { 
         return back(); 
     });
@@ -69,9 +66,6 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
     });
 
     // --- Manajemen Pembayaran ---
-    Route::get('/pembayaran', function () { 
-        return view('pembayaran'); 
-    });
     Route::post('/proses_pembayaran', function () { 
         return back(); 
     });
@@ -94,7 +88,7 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 
 Route::middleware(['auth', 'role:penghuni'])->group(function () { 
     Route::get('penghuni/dashboard', function () {
-        return view('dashboard_penghuni');
+        return view('penghuni.dashboard');
     })->name('penghuni.dashboard'); //buat route penghuni
 
     Route::middleware('auth')->group(function () {
@@ -104,18 +98,21 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
 
     });
 
-    Route::get('/pembayaran-manual', function () {
-        return view('pembayaran_manual');
-    });
+    Route::get('penghuni/pembayaran-manual', function () {
+        return view('penghuni.pembayaran_manual'); // Diperbarui
+    })->name('penghuni.pembayaran-manual');
 
-    Route::get('/profile', function () {
-        return view('profile_penghuni');
-    });
+    Route::get('penghuni/pembayaran', function () {
+        return view('penghuni.pembayaran_penghuni'); // Diperbarui
+    })->name('penghuni.pembayaran');
+
+    Route::get('penghuni/profile', function () {
+        return view('penghuni.profile_penghuni'); // Diperbarui
+    })->name('penghuni.profile');
 
     Route::post('/update-profile', function () {
-        // Logic update data profil penghuni
         return redirect()->back()->with('success', 'Profil berhasil diupdate!');
-    });
+    })->name('penghuni.update-profile');
 });
 
     // --- Action Form Pembayaran Penghuni ---

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
 
     Route::get('/', function () {
-        return view('login');
+        return view('auth.login');
     });
 
     Route::get('register', [RegisteredUserController::class, 'create'])
