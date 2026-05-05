@@ -1,34 +1,56 @@
 <aside class="w-64 bg-[#18181B] text-zinc-400 flex flex-col fixed h-full z-50 border-r border-zinc-800">
     <div class="p-6 border-b border-zinc-800">
-        <h2 class="text-white text-xl font-bold tracking-tight uppercase">Dthanasha <span class="text-white">Kost</span></h2>
+        <h2 class="text-white text-xl font-bold tracking-tight uppercase">Dthanasha <span class="text-white">Kost</span>
+        </h2>
         <p class="text-[10px] text-zinc-500 tracking-[0.2em] mt-1 uppercase">Pemilik Kost</p>
     </div>
-    
+
     <nav class="flex-1 px-4 py-6 space-y-1">
-        <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
-            <i class="ph ph-squares-four text-lg {{ request()->routeIs('admin.dashboard') ? 'text-white' : '' }}"></i> Dashboard
+        <a href="{{ route('admin.dashboard') }}"
+            class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
+            <i class="ph ph-squares-four text-lg {{ request()->routeIs('admin.dashboard') ? 'text-white' : '' }}"></i>
+            Dashboard
         </a>
-        <a href="{{ route('admin.data-penghuni') }}" class="sidebar-link {{ request()->routeIs('admin.data-penghuni') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
-            <i class="ph ph-users text-lg {{ request()->routeIs('admin.data-penghuni') ? 'text-white' : '' }}"></i> Data Penghuni
+        <a href="{{ route('admin.data-penghuni') }}"
+            class="sidebar-link {{ request()->routeIs('admin.data-penghuni') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
+            <i class="ph ph-users text-lg {{ request()->routeIs('admin.data-penghuni') ? 'text-white' : '' }}"></i> Data
+            Penghuni
         </a>
-        <a href="{{ route('admin.waiting-list') }}" class="sidebar-link {{ request()->routeIs('admin.waiting-list') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
-            <i class="ph ph-clock text-lg {{ request()->routeIs('admin.waiting-list') ? 'text-white' : '' }}"></i> Waiting List
+        <a href="{{ route('admin.waiting-list') }}"
+            class="sidebar-link {{ request()->routeIs('admin.waiting-list') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
+            <i class="ph ph-clock text-lg {{ request()->routeIs('admin.waiting-list') ? 'text-white' : '' }}"></i>
+            Waiting List
         </a>
-        <a href="{{ route('admin.manajemen-kamar') }}" class="sidebar-link {{ request()->routeIs('admin.manajemen-kamar') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
-            <i class="ph ph-door text-lg {{ request()->routeIs('admin.manajemen-kamar') ? 'text-white' : '' }}"></i> Manajemen Kamar
+        <a href="{{ route('admin.manajemen-kamar') }}"
+            class="sidebar-link {{ request()->routeIs('admin.manajemen-kamar') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
+            <i class="ph ph-door text-lg {{ request()->routeIs('admin.manajemen-kamar') ? 'text-white' : '' }}"></i>
+            Manajemen Kamar
         </a>
-        <a href="{{ route('admin.pembayaran') }}" class="sidebar-link {{ request()->routeIs('admin.pembayaran') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
-            <i class="ph ph-receipt text-lg {{ request()->routeIs('admin.pembayaran') ? 'text-white' : '' }}"></i> Pembayaran
+        <a href="{{ route('admin.pembayaran') }}"
+            class="sidebar-link {{ request()->routeIs('admin.pembayaran') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
+            <i class="ph ph-receipt text-lg {{ request()->routeIs('admin.pembayaran') ? 'text-white' : '' }}"></i>
+            Pembayaran
         </a>
-        <a href="{{ route('admin.riwayat') }}" class="sidebar-link {{ request()->routeIs('admin.riwayat') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
-            <i class="ph ph-clock-counter-clockwise text-lg {{ request()->routeIs('admin.riwayat') ? 'text-white' : '' }}"></i> Riwayat
+        <a href="{{ route('admin.riwayat') }}"
+            class="sidebar-link {{ request()->routeIs('admin.riwayat') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all">
+            <i
+                class="ph ph-clock-counter-clockwise text-lg {{ request()->routeIs('admin.riwayat') ? 'text-white' : '' }}"></i>
+            Riwayat
+        </a>
+
+        <!-- MENU PENGATURAN -->
+        <a href="{{ route('admin.pengaturan') }}"
+            class="sidebar-link {{ request()->routeIs('admin.pengaturan') ? 'active-link font-semibold' : 'font-medium hover:text-white' }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all mt-4 border-t border-zinc-800 pt-4">
+            <i class="ph ph-gear text-lg {{ request()->routeIs('admin.pengaturan') ? 'text-white' : '' }}"></i>
+            Pengaturan
         </a>
     </nav>
 
     <div class="p-6 border-t border-zinc-800">
         <form action="{{ url('/logout') }}" method="POST">
             @csrf
-            <button class="flex items-center gap-3 text-sm font-medium hover:text-red-400 transition-all uppercase tracking-wider w-full">
+            <button
+                class="flex items-center gap-3 text-sm font-medium hover:text-red-400 transition-all uppercase tracking-wider w-full">
                 <i class="ph ph-sign-out text-lg"></i> Keluar
             </button>
         </form>

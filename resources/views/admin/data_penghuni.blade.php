@@ -8,6 +8,13 @@
 @endsection
 
 @section('content')
+    <!-- Notifikasi Sukses/Gagal -->
+    @if(session('success'))
+        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl font-bold text-sm flex items-center gap-2">
+            <i class="ph-fill ph-check-circle text-lg"></i> {{ session('success') }}
+        </div>
+    @endif
+
     <!-- KARTU SUMMARY GENDER -->
     <div class="flex gap-6 mb-10">
         <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
@@ -16,7 +23,7 @@
             </div>
             <div>
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Pria</p>
-                <p class="text-3xl font-extrabold text-gray-900">50</p>
+                <p class="text-3xl font-extrabold text-gray-900">{{ $totalPria ?? 0 }}</p>
             </div>
         </div>
         <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
@@ -25,7 +32,7 @@
             </div>
             <div>
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Wanita</p>
-                <p class="text-3xl font-extrabold text-gray-900">50</p>
+                <p class="text-3xl font-extrabold text-gray-900">{{ $totalWanita ?? 0 }}</p>
             </div>
         </div>
     </div>
@@ -61,33 +68,34 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200">
-                    <tr class="hover:bg-zinc-50 transition-colors cursor-pointer group" onclick="bukaModalHapus('Dimas Anggara', '21', '012', 'Pria', '081234567890', '085234567890', 'dimas_ang')">
-                        <td class="px-6 py-4 text-sm font-bold text-gray-400 text-center">1</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 group-hover:text-[#334155] transition-colors">Dimas Anggara</td>
-                        <td class="px-6 py-4 text-sm text-center text-gray-600">21</td>
-                        <td class="px-6 py-4 text-center"><span class="bg-zinc-200 text-zinc-800 text-[11px] font-black px-2.5 py-1 rounded-md">012</span></td>
-                        <td class="px-6 py-4 text-sm text-gray-600">Pria</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">081234567890</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">085234567890</td>
-                        <td class="px-6 py-4"><span class="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded-lg border border-zinc-200">@dimas_ang</span></td>
-                    </tr>
-                    <tr class="hover:bg-zinc-50 transition-colors cursor-pointer group" onclick="bukaModalHapus('Putri Larasati', '20', '045', 'Wanita', '081384700111', '08777000322', 'putrilaras')">
-                        <td class="px-6 py-4 text-sm font-bold text-gray-400 text-center">2</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 group-hover:text-[#334155] transition-colors">Putri Larasati</td>
-                        <td class="px-6 py-4 text-sm text-center text-gray-600">20</td>
-                        <td class="px-6 py-4 text-center"><span class="bg-zinc-200 text-zinc-800 text-[11px] font-black px-2.5 py-1 rounded-md">045</span></td>
-                        <td class="px-6 py-4 text-sm text-gray-600">Wanita</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">081384700111</td>
-                        <td class="px-6 py-4 text-sm text-gray-500">08777000322</td>
-                        <td class="px-6 py-4"><span class="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded-lg border border-zinc-200">@putrilaras</span></td>
-                    </tr>
+                    @forelse($penghunis as $index => $p)
+                        <tr class="hover:bg-zinc-50 transition-colors cursor-pointer group" 
+                            onclick="bukaModalHapus('{{ $p->nama_penghuni }}', '{{ $p->usia }}', '-', '{{ $p->jenis_kelamin }}', '{{ $p->no_telepon }}', '{{ $p->no_telepon_orangtua }}', '{{ $p->user->username ?? '' }}')">
+                            <td class="px-6 py-4 text-sm font-bold text-gray-400 text-center">{{ $index + 1 }}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 group-hover:text-[#334155] transition-colors">{{ $p->nama_penghuni }}</td>
+                            <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $p->usia }}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-zinc-200 text-zinc-800 text-[11px] font-black px-2.5 py-1 rounded-md">-</span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $p->no_telepon }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ $p->no_telepon_orangtua }}</td>
+                            <td class="px-6 py-4">
+                                <span class="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded-lg border border-zinc-200">{{ '@' . ($p->user->username ?? 'tidak_ada') }}</span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center text-sm font-bold text-zinc-400">Belum ada data penghuni. Silakan tambah data baru.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         <!-- PAGINATION -->
         <div class="p-6 border-t border-zinc-100 flex items-center justify-between bg-white">
-            <p class="text-xs font-semibold text-zinc-400">Menampilkan 2 dari 80 Penghuni</p>
+            <p class="text-xs font-semibold text-zinc-400">Total: {{ count($penghunis ?? []) }} Penghuni</p>
             <div class="flex gap-2">
                 <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 hover:bg-zinc-50 transition-all"><i class="fas fa-chevron-left text-xs"></i></button>
                 <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#334155] text-white text-xs font-bold shadow-sm">1</button>
@@ -115,8 +123,8 @@
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Gender</label>
                         <select name="jk" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
-                            <option value="Pria">Pria</option>
-                            <option value="Wanita">Wanita</option>
+                            <option value="L">Pria</option>
+                            <option value="P">Wanita</option>
                         </select>
                     </div>
                 </div>
@@ -133,10 +141,10 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">No. Kamar</label>
-                        <input type="text" name="nomor_kamar" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                        <input type="text" name="nomor_kamar" placeholder="Akan disambungkan nanti" class="w-full px-4 py-3 rounded-xl bg-zinc-100 border border-zinc-200 text-zinc-500 font-bold text-sm cursor-not-allowed" readonly>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Akun</label>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Akun (Username)</label>
                         <input type="text" name="nama_akun" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                     </div>
                 </div>

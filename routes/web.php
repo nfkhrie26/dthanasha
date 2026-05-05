@@ -1,26 +1,34 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\PenghuniController; // <--- Controller baru buat CRUD Penghuni
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
+// ==========================================
+// ROUTE SISI PEMILIK (ADMINISTRATOR)
+// ==========================================
 Route::middleware(['auth', 'role:owner'])->group(function () {
+    
+    // --- Views Admin ---
     Route::get('admin/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-    Route::get('admin/data-penghuni', function () {
-        return view('admin.data_penghuni');
-    })->name('admin.data-penghuni');
+    // ---> Route CRUD Data Penghuni (Tersambung Database) <---
+    Route::get('admin/data-penghuni', [PenghuniController::class, 'index'])->name('admin.data-penghuni');
+    Route::post('/tambah_akun', [PenghuniController::class, 'store']);
+    Route::delete('/hapus_penghuni', [PenghuniController::class, 'destroy']);
 
-    Route::get('admin/manajamen-kamar', function () {
+    // --- Views Admin Lainnya ---
+    Route::get('admin/manajemen-kamar', function () {
         return view('admin.manajemen_kamar');
     })->name('admin.manajemen-kamar');
 
-    Route::get('admin/waiting_list', function () { 
+    Route::get('admin/waiting-list', function () { 
         return view('admin.waiting_list'); 
     })->name('admin.waiting-list');
 
@@ -32,90 +40,71 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
         return view('admin.riwayat'); 
     })->name('admin.riwayat');
 
-    // --- Manajemen Data Penghuni ---
-    Route::get('/data_penghuni', function () { 
-        return view('data_penghuni'); 
-    });
-    Route::post('/tambah_akun', function () { 
-        return back(); 
-    });
-    Route::delete('/hapus_penghuni', function () { 
-        return back(); 
-    });
+    Route::get('admin/pengaturan', function () { 
+        return view('admin.pengaturan'); 
+    })->name('admin.pengaturan');
 
-    // --- Manajemen Waiting List ---
-    Route::post('/tambah_waiting_list', function () { 
-        return back(); 
-    });
-    Route::put('/edit_waiting_list', function () { 
-        return back(); 
-    });
-    Route::delete('/hapus_waiting_list', function () { 
-        return back(); 
-    });
 
-    // --- Manajemen Kamar ---
-    Route::post('/tambah_kamar', function () { 
-        return back(); 
-    });
-    Route::put('/edit_kamar', function () { 
-        return back(); 
-    });
-    Route::delete('/hapus_kamar', function () { 
-        return back(); 
-    });
+    // --- Action Admin Lainnya (Proses Form yang belum pakai Controller) ---
+    
+    // Manajemen Waiting List
+    Route::post('/tambah_waiting_list', function () { return back(); });
+    Route::put('/edit_waiting_list', function () { return back(); });
+    Route::delete('/hapus_waiting_list', function () { return back(); });
 
-    // --- Manajemen Pembayaran ---
-    Route::post('/proses_pembayaran', function () { 
-        return back(); 
-    });
-    Route::get('/kirim_notifikasi', function () { 
-        return back(); 
-    });
+    // Manajemen Kamar
+    Route::post('/tambah_kamar', function () { return back(); });
+    Route::put('/edit_kamar', function () { return back(); });
+    Route::delete('/hapus_kamar', function () { return back(); });
 
-    // --- Manajemen Riwayat Transaksi ---
-    Route::post('/tambah_riwayat', function () { 
-        return back(); 
-    });
-    Route::put('/edit_riwayat', function () { 
-        return back(); 
-    });
-    Route::delete('/hapus_riwayat', function () { 
-        return back(); 
-    });
+    // Manajemen Pembayaran
+    Route::post('/proses_pembayaran', function () { return back(); });
+    Route::get('/kirim_notifikasi', function () { return back(); });
 
-});//buat route owner/admin
+    // Manajemen Riwayat Transaksi
+    Route::post('/tambah_riwayat', function () { return back(); });
+    Route::put('/edit_riwayat', function () { return back(); });
+    Route::delete('/hapus_riwayat', function () { return back(); });
 
+    // Action Pengaturan
+    Route::post('/update_pengaturan', function () { return back(); });
+});
+
+
+// ==========================================
+// ROUTE SISI PENGHUNI
+// ==========================================
 Route::middleware(['auth', 'role:penghuni'])->group(function () { 
+    
+    // --- Views Penghuni ---
     Route::get('penghuni/dashboard', function () {
         return view('penghuni.dashboard');
-    })->name('penghuni.dashboard'); //buat route penghuni
-
-    Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    });
+    })->name('penghuni.dashboard');
 
     Route::get('penghuni/pembayaran-manual', function () {
-        return view('penghuni.pembayaran_manual'); // Diperbarui
+        return view('penghuni.pembayaran_manual');
     })->name('penghuni.pembayaran-manual');
 
     Route::get('penghuni/pembayaran', function () {
-        return view('penghuni.pembayaran_penghuni'); // Diperbarui
+        return view('penghuni.pembayaran_penghuni');
     })->name('penghuni.pembayaran');
 
     Route::get('penghuni/profile', function () {
-        return view('penghuni.profile_penghuni'); // Diperbarui
+        return view('penghuni.profile_penghuni');
     })->name('penghuni.profile');
 
+
+    // --- Profil Bawaan Breeze ---
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+    // --- Action Penghuni (Proses Form) ---
     Route::post('/update-profile', function () {
         return redirect()->back()->with('success', 'Profil berhasil diupdate!');
     })->name('penghuni.update-profile');
-});
 
-    // --- Action Form Pembayaran Penghuni ---
     Route::post('/proses_bayar_penghuni', function () {
         // Logic upload dari modal gateway
         return redirect()->back();
@@ -125,5 +114,7 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
         // Logic upload dari halaman upload manual
         return redirect('/penghuni/pembayaran');
     });
+});
 
+// Route autentikasi bawaan Breeze
 require __DIR__.'/auth.php';
