@@ -9,23 +9,35 @@ class Penghuni extends Model
 {
     use HasFactory;
 
-    // Kasih tau nama tabelnya biar Laravel gak nyari tabel 'penghunis'
-    protected $table = 'penghuni';
+    // Pastikan nama tabelnya sesuai dengan migration-mu
+    protected $table = 'penghuni'; 
 
-    // Kolom yang boleh diisi (sesuai file migration temen lu)
+    // Field apa saja yang boleh diisi lewat form (sesuaikan dengan kolom di databasemu)
     protected $fillable = [
-        'id_user',
-        'id_kamar',
         'nama_penghuni',
         'usia',
         'jenis_kelamin',
         'no_telepon',
         'no_telepon_orangtua',
+        'kamar_id', // <-- Ini foreign key yang menghubungkan ke tabel kamar
+        'user_id'   // <-- Ini foreign key yang menghubungkan ke tabel users (akun)
     ];
 
-    // Relasi ke tabel User
+    /**
+     * Relasi ke model Kamar.
+     * Satu penghuni menempati satu kamar (belongsTo).
+     */
+    public function kamar()
+    {
+        return $this->belongsTo(Kamar::class, 'kamar_id');
+    }
+
+    /**
+     * Relasi ke model User (Akun login).
+     * Satu penghuni memiliki satu akun user (belongsTo).
+     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

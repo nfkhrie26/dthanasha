@@ -1,51 +1,52 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Penghuni;
 
 use Illuminate\Http\Request;
 use App\Services\MidtransService;
 use Illuminate\Support\Facades\Log;
-use App\Models\Kamar;
-
+use App\Models\Transaksi;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
 {
-    protected $midtransService;
+  protected $midtransService;
 
-    // 1. Dependency Injection Service kita tadi
     public function __construct(MidtransService $midtransService)
     {
         $this->midtransService = $midtransService;
     }
 
-    // =========================================================
-    // METHOD 1: BUAT NAMPILLIN HALAMAN PEMBAYARAN DI BLADE
-    // =========================================================
-    public function bayarKost(Request $request)
+    public function halamanPembayaran()
     {
-        // Anggap aja lu ngambil data dari database
-        $kamar = Kamar::find($request->kamar_id);
+        $grossAmount = 1200000; 
+        return view('penghuni.pembayaran', compact('grossAmount'));
+    }
+
+    public function prosesBayar(Request $request)
+    {
+        $user = Auth::user();
+
+        $idTagihanDummy = 99; 
+        $grossAmount = 1200000; 
         
-        $orderId = 'TRX-' . time(); // Harus Unik!
-        $grossAmount = 1200000; // Harga total
-        
+        $orderId = 'TRX-' . time() . '-' . $user->id; 
+
         $customerDetails = [
-            'first_name' => 'Dimas',
-            'last_name' => 'Anggara',
-            'email' => 'dimas@example.com',
-            'phone' => '081234567890',
+            'first_name' => $user->username, 
+            'email' => $user->email,
         ];
 
         $itemDetails = [
             [
-                'id' => 'KMR-001',
-                'price' => $grossAmount,
+                'id'       => 'TAGIHAN-' . $idTagihanDummy,
+                'price'    => $grossAmount,
                 'quantity' => 1,
-                'name' => 'Pembayaran Kost Bulan Ini'
+                'name'     => 'Pembayaran Kost Dthanasha'
             ]
         ];
 
-        // Minta Token ke Service
         $snapToken = $this->midtransService->createSnapToken(
             $orderId, 
             $grossAmount, 
@@ -53,19 +54,20 @@ class PaymentController extends Controller
             $itemDetails
         );
 
-        // Nanti lu bikin record di database lu statusnya "PENDING"
-        Transaksi::create(
-            [
-                'order_id' => $orderId,
-                'id_tagihan'=> 'dauhanid', 
-                'status' => 'pending', 
-                'total' => $grossAmount,
-                'tipe_pembayaran' => ''
-            ]
-        );
+        Transaksi::create([
+            'order_id'         => $orderId,
+            'id_tagihan'       => $idTagihanDummy,
+            'snap_token'       => $snapToken,
+            'status_transaksi' => 'menunggu', 
+            'tipe_pembayaran'  => null, 
+        ]);
 
-        // Lempar token ke Blade Penghuni
-        return view('penghuni.checkout', compact('snapToken', 'orderId'));
+        // 3. FIX ERROR <!DOCTYPE> DI JAVASCRIPT LU
+        // Wajib balikin JSON, bukan return view!
+        return response()->json([
+            'status' => 'success',
+            'snap_token' => $snapToken
+        ]);
     }
 
     // =========================================================
@@ -84,10 +86,10 @@ class PaymentController extends Controller
             $fraud = $notif->fraud_status;
 
             // Cari transaksi di database lu berdasarkan order_id
-            // $transaksi = Transaksi::where('order_id', $orderId)->first();
+            $transaksi = Transaksi::where('order_id', $orderId)->first();
             
             // Kalau transaksinya nggak ada, langsung stop
-            // if(!$transaksi) return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+            if(!$transaksi) return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
 
             // LOGIKA PENGECEKAN STATUS DARI MIDTRANS
             if ($transaction == 'capture') {

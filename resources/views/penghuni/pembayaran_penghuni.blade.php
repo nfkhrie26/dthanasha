@@ -33,7 +33,7 @@
         <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 h-72 flex flex-col justify-center">
             <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-6">Aksi Cepat</h3>
             <div class="flex gap-6 h-full">
-                <button class="flex-1 bg-[#18181B] hover:bg-[#334155] text-white rounded-2xl flex flex-col items-center justify-center gap-3 transition-all active:scale-95 shadow-md">
+                <button id="pay-button" class="flex-1 bg-[#18181B] hover:bg-[#334155] text-white rounded-2xl flex flex-col items-center justify-center gap-3 transition-all active:scale-95 shadow-md">
                     <i class="ph ph-wallet text-3xl"></i>
                     <span class="font-bold text-sm tracking-wide">Bayar Sekarang</span>
                 </button>
@@ -120,6 +120,64 @@
 
 @section('scripts')
     <script>
+        document.getElementById('pay-button').onclick = async function(e) {
+            e.preventDefault();
+            
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            // Bikin tombol loading biar keliatan profesional
+            btn.innerHTML = 'Sedang memproses...';
+            btn.disabled = true;
+
+            try {
+                // Ambil CSRF Token dari meta tag
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+                // Tembak URL controller kita di belakang layar
+                const response = await fetch('/proses-bayar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                });
+
+                const data = await response.json();
+
+                // Balikin wujud tombolnya
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+
+                if(data.status === 'success') {
+                    // Panggil Midtrans pake token dari respon JSON
+                    window.snap.pay(data.snap_token, {
+                        onSuccess: function(result){
+                            alert("Mantap! Pembayaran berhasil.");
+                            window.location.reload(); 
+                        },
+                        onPending: function(result){
+                            alert("Sip, segera transfer ya bro!");
+                            window.location.reload();
+                        },
+                        onError: function(result){
+                            alert("Pembayaran gagal!");
+                        },
+                        onClose: function(){
+                            alert("Lu nutup popup belom kelar bayar woy!");
+                        }
+                    });
+                } else {
+                    alert("Gagal memproses token, coba lagi.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Ada gangguan di server nih!");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
         function bukaModalBerhasil() { 
             tutupSemuaModal();
             document.getElementById('modalBerhasil').classList.remove('hidden'); 
