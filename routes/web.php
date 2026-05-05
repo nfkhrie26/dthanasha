@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\PenghuniController; // <--- Controller baru buat CRUD Penghuni
+use App\Http\Controllers\Admin\PenghuniController;
+use App\Http\Controllers\Admin\WaitingListController; // <--- Controller baru buat CRUD Waiting List
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,19 +19,21 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-    // ---> Route CRUD Data Penghuni (Tersambung Database) <---
+    // ---> Route CRUD Data Penghuni <---
     Route::get('admin/data-penghuni', [PenghuniController::class, 'index'])->name('admin.data-penghuni');
     Route::post('/tambah_akun', [PenghuniController::class, 'store']);
     Route::delete('/hapus_penghuni', [PenghuniController::class, 'destroy']);
+
+    // ---> Route CRUD Waiting List <---
+    Route::get('admin/waiting-list', [WaitingListController::class, 'index'])->name('admin.waiting-list');
+    Route::post('/tambah_waiting_list', [WaitingListController::class, 'store']);
+    Route::put('/edit_waiting_list', [WaitingListController::class, 'update']);
+    Route::delete('/hapus_waiting_list', [WaitingListController::class, 'destroy']);
 
     // --- Views Admin Lainnya ---
     Route::get('admin/manajemen-kamar', function () {
         return view('admin.manajemen_kamar');
     })->name('admin.manajemen-kamar');
-
-    Route::get('admin/waiting-list', function () { 
-        return view('admin.waiting_list'); 
-    })->name('admin.waiting-list');
 
     Route::get('admin/pembayaran', function () { 
         return view('admin.pembayaran'); 
@@ -47,11 +50,6 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 
     // --- Action Admin Lainnya (Proses Form yang belum pakai Controller) ---
     
-    // Manajemen Waiting List
-    Route::post('/tambah_waiting_list', function () { return back(); });
-    Route::put('/edit_waiting_list', function () { return back(); });
-    Route::delete('/hapus_waiting_list', function () { return back(); });
-
     // Manajemen Kamar
     Route::post('/tambah_kamar', function () { return back(); });
     Route::put('/edit_kamar', function () { return back(); });

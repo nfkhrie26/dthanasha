@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('waiting_list', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->enum('jenis_kelamin', ['Pria', 'Wanita']);
             $table->string('no_telepon');
             $table->string('preferensi_kamar')->nullable();
             $table->timestamps();

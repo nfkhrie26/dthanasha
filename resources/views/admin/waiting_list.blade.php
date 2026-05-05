@@ -4,6 +4,13 @@
 @section('search_placeholder', 'Cari nama calon penghuni...')
 
 @section('content')
+    <!-- Notifikasi Sukses -->
+    @if(session('success'))
+        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl font-bold text-sm flex items-center gap-2">
+            <i class="ph-fill ph-check-circle text-lg"></i> {{ session('success') }}
+        </div>
+    @endif
+
     <!-- KARTU SUMMARY GENDER -->
     <div class="flex gap-6 mb-10">
         <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
@@ -12,7 +19,7 @@
             </div>
             <div>
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Pria</p>
-                <p class="text-3xl font-extrabold text-gray-900">30</p>
+                <p class="text-3xl font-extrabold text-gray-900">{{ $totalPria ?? 0 }}</p>
             </div>
         </div>
         <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 flex items-center gap-4 w-60 group transition-all">
@@ -21,7 +28,7 @@
             </div>
             <div>
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Wanita</p>
-                <p class="text-3xl font-extrabold text-gray-900">50</p>
+                <p class="text-3xl font-extrabold text-gray-900">{{ $totalWanita ?? 0 }}</p>
             </div>
         </div>
     </div>
@@ -54,118 +61,39 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-100">
-                    <!-- Baris 1 -->
-                    <tr class="hover:bg-zinc-50 transition-colors group">
-                        <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">1</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">Dimas Anggara</td>
-                        <td class="px-6 py-4 text-sm text-zinc-600">Pria</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-600">081234567890</td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <button onclick="bukaModalEdit('1', 'Dimas Anggara', 'Pria', '081234567890')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors shadow-sm" title="Edit">
-                                    <i class="ph ph-pencil-simple text-base"></i>
-                                </button>
-                                <form action="{{ url('/hapus_waiting_list') }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <input type="hidden" name="id" value="1">
-                                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm" title="Hapus">
-                                        <i class="ph ph-trash text-base"></i>
+                    @forelse($antrean as $index => $a)
+                        <tr class="hover:bg-zinc-50 transition-colors group">
+                            <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">{{ $index + 1 }}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">{{ $a->nama }}</td>
+                            <td class="px-6 py-4 text-sm text-zinc-600">{{ $a->jenis_kelamin }}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-zinc-600">{{ $a->no_telepon }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button onclick="bukaModalEdit('{{ $a->id }}', '{{ $a->nama }}', '{{ $a->jenis_kelamin }}', '{{ $a->no_telepon }}')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors shadow-sm" title="Edit">
+                                        <i class="ph ph-pencil-simple text-base"></i>
                                     </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Baris 2 -->
-                    <tr class="hover:bg-zinc-50 transition-colors group">
-                        <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">2</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">Putri Larasati</td>
-                        <td class="px-6 py-4 text-sm text-zinc-600">Wanita</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-600">081384700111</td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <button onclick="bukaModalEdit('2', 'Putri Larasati', 'Wanita', '081384700111')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors shadow-sm" title="Edit">
-                                    <i class="ph ph-pencil-simple text-base"></i>
-                                </button>
-                                <form action="{{ url('/hapus_waiting_list') }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <input type="hidden" name="id" value="2">
-                                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm" title="Hapus">
-                                        <i class="ph ph-trash text-base"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Baris 3 -->
-                    <tr class="hover:bg-zinc-50 transition-colors group">
-                        <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">3</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">Reza Rahadian</td>
-                        <td class="px-6 py-4 text-sm text-zinc-600">Pria</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-600">081555666777</td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <button onclick="bukaModalEdit('3', 'Reza Rahadian', 'Pria', '081555666777')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors shadow-sm" title="Edit">
-                                    <i class="ph ph-pencil-simple text-base"></i>
-                                </button>
-                                <form action="{{ url('/hapus_waiting_list') }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <input type="hidden" name="id" value="3">
-                                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm" title="Hapus">
-                                        <i class="ph ph-trash text-base"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Baris 4 -->
-                    <tr class="hover:bg-zinc-50 transition-colors group">
-                        <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">4</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">Budi Santoso</td>
-                        <td class="px-6 py-4 text-sm text-zinc-600">Pria</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-600">081299887766</td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <button onclick="bukaModalEdit('4', 'Budi Santoso', 'Pria', '081299887766')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors shadow-sm" title="Edit">
-                                    <i class="ph ph-pencil-simple text-base"></i>
-                                </button>
-                                <form action="{{ url('/hapus_waiting_list') }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <input type="hidden" name="id" value="4">
-                                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm" title="Hapus">
-                                        <i class="ph ph-trash text-base"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Baris 5 -->
-                    <tr class="hover:bg-zinc-50 transition-colors group">
-                        <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">5</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">Ayu Lestari</td>
-                        <td class="px-6 py-4 text-sm text-zinc-600">Wanita</td>
-                        <td class="px-6 py-4 text-sm font-medium text-zinc-600">085612345678</td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                <button onclick="bukaModalEdit('5', 'Ayu Lestari', 'Wanita', '085612345678')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors shadow-sm" title="Edit">
-                                    <i class="ph ph-pencil-simple text-base"></i>
-                                </button>
-                                <form action="{{ url('/hapus_waiting_list') }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <input type="hidden" name="id" value="5">
-                                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm" title="Hapus">
-                                        <i class="ph ph-trash text-base"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
+                                    <form action="{{ url('/hapus_waiting_list') }}" method="POST" class="inline">
+                                        @csrf @method('DELETE')
+                                        <input type="hidden" name="id" value="{{ $a->id }}">
+                                        <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors shadow-sm" title="Hapus">
+                                            <i class="ph ph-trash text-base"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-8 text-center text-sm font-bold text-zinc-400">Belum ada data antrean.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         <!-- PAGINATION -->
         <div class="p-6 border-t border-zinc-100 flex items-center justify-between bg-white">
-            <p class="text-xs font-semibold text-zinc-400">Menampilkan 5 dari 80 Antrean</p>
+            <p class="text-xs font-semibold text-zinc-400">Total: {{ count($antrean ?? []) }} Antrean</p>
             <div class="flex gap-2">
                 <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 hover:bg-zinc-50 transition-all"><i class="ph ph-caret-left font-bold"></i></button>
                 <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#334155] text-white text-xs font-bold shadow-sm">1</button>
