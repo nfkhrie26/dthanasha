@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('log_transaksi', function (Blueprint $table) {
+        Schema::create('transaksi', function (Blueprint $table) {
+            $table->id();
             // order_id WAJIB string karena Midtrans pake format string (misal: TRX-9921)
-            $table->string('order_id')->primary(); 
+            $table->string('order_id'); 
             
             // Nullable karena satu transaksi nggak mungkin buat tagihan dan waiting list sekaligus
             $table->unsignedBigInteger('id_tagihan')->nullable();
-            $table->unsignedBigInteger('id_waiting_list')->nullable();
             
             $table->string('snap_token')->nullable();
             $table->string('tipe_pembayaran')->nullable(); // Misal: 'Gopay', 'BCA VA'
@@ -26,7 +26,6 @@ return new class extends Migration
 
             // Relasi
             $table->foreign('id_tagihan')->references('id')->on('tagihan')->onDelete('set null');
-            $table->foreign('id_waiting_list')->references('id')->on('waiting_list')->onDelete('set null');
         });
     }
 
@@ -35,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('log_transaksi');
+        Schema::dropIfExists('transaksi');
     }
 };

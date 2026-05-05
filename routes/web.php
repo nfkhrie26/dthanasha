@@ -2,12 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PenghuniController;
-use App\Http\Controllers\Admin\WaitingListController; // <--- Controller baru buat CRUD Waiting List
+use App\Http\Controllers\Penghuni\PaymentController;
+use App\Http\Controllers\Admin\WaitingListController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('auth.login');
-});
 
 // ==========================================
 // ROUTE SISI PEMILIK (ADMINISTRATOR)
@@ -107,6 +104,8 @@ Route::middleware(['auth', 'role:penghuni'])->group(function () {
         // Logic upload dari modal gateway
         return redirect()->back();
     });
+
+    Route::post('/midtrans-callback', [PaymentController::class, 'callback']);
 
     Route::post('/proses_bayar_manual', function () {
         // Logic upload dari halaman upload manual
