@@ -8,27 +8,7 @@
 @endsection
 
 @section('content')
-    <!-- Notifikasi Sukses/Gagal -->
-    @if(session('success'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl font-bold text-sm flex items-center gap-2">
-            <i class="fas fa-check-circle text-lg"></i> {{ session('success') }}
-        </div>
-    @endif
 
-    <!-- TAMBAHKAN KODE ERROR INI -->
-    @if ($errors->any())
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
-            <div class="flex items-center gap-2 mb-2 font-bold">
-                <i class="fas fa-exclamation-triangle text-lg"></i>
-                <span>Gagal menyimpan data! Cek kesalahan berikut:</span>
-            </div>
-            <ul class="list-disc pl-8 font-medium text-xs space-y-1">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
     <!-- KARTU SUMMARY GENDER -->
     <div class="flex gap-6 mb-10">

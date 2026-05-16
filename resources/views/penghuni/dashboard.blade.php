@@ -3,7 +3,7 @@
 @section('title', 'Dashboard Penghuni - Dthanasha Kost')
 
 @section('search_input')
-<div class="relative w-96">
+<div class="relative w-full max-w-md md:w-96">
     <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-lg"></i>
     <input type="text" placeholder="Cari riwayat atau bantuan..." class="w-full pl-10 pr-4 py-2 bg-white border border-zinc-300 rounded-lg focus:outline-none focus:border-[#334155] focus:ring-1 focus:ring-[#334155] transition-all text-sm">
 </div>
@@ -27,15 +27,19 @@
             <div class="space-y-4">
                 <div class="flex justify-between items-center border-b border-zinc-50 pb-2">
                     <span class="text-sm font-medium text-zinc-500">Nomor Kamar</span>
-                    <span class="text-sm font-black text-zinc-900 bg-zinc-100 px-2 py-0.5 rounded">{{ $kamar->nomor_kamar }}</span>
+                    <span class="text-sm font-black text-zinc-900 bg-zinc-100 px-2 py-0.5 rounded">{{ $kamar?->nomor_kamar ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between items-center border-b border-zinc-50 pb-2">
                     <span class="text-sm font-medium text-zinc-500">Tipe Kamar</span>
-                    <span class="text-sm font-bold text-zinc-900">{{ $kamar->jenis_kamar }}</span>
+                    <span class="text-sm font-bold text-zinc-900">{{ $kamar?->jenis_kamar ?? '-' }}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-zinc-50 pb-2">
+                    <span class="text-sm font-medium text-zinc-500">Harga/Bulan</span>
+                    <span class="text-sm font-bold text-zinc-900">{{ $kamar ? 'Rp ' . number_format($kamar->harga_kamar, 0, ',', '.') : '-' }}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-sm font-medium text-zinc-500">Tanggal Masuk</span>
-                    <span class="text-sm font-bold text-zinc-900">{{ $penghuni->created_at?->format('d/m/y') ?? '-' }}</span>
+                    <span class="text-sm font-bold text-zinc-900">{{ $penghuni?->created_at?->format('d/m/Y') ?? '-' }}</span>
                 </div>
             </div>
         </div>
@@ -49,30 +53,62 @@
                     <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Riwayat Pembayaran</h3>
                     <i class="ph ph-clock-counter-clockwise text-zinc-400 text-lg"></i>
                 </div>
-                <table class="w-full text-left">
-                    <thead class="bg-zinc-50 text-zinc-400 text-[10px] uppercase tracking-widest border-b border-zinc-100">
-                        <tr>
-                            <th class="px-6 py-4">Transaksi</th>
-                            <th class="px-6 py-4 text-center">Status</th>
-                            <th class="px-6 py-4">Tanggal</th>
-                            <th class="px-6 py-4 text-right">Nominal</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-zinc-50">
-                        <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer">
-                            <td class="px-6 py-4 text-sm font-bold text-gray-900">Sewa Kost Maret</td>
-                            <td class="px-6 py-4 text-center"><span class="bg-green-50 text-green-600 text-[10px] font-black px-2 py-1 rounded-md border border-green-100 uppercase">Berhasil</span></td>
-                            <td class="px-6 py-4 text-sm text-zinc-500">12 Mar 2026</td>
-                            <td class="px-6 py-4 text-sm font-black text-zinc-900 text-right">Rp 1.200.000</td>
-                        </tr>
-                        <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer">
-                            <td class="px-6 py-4 text-sm font-bold text-gray-900">Sewa Kost Februari</td>
-                            <td class="px-6 py-4 text-center"><span class="bg-green-50 text-green-600 text-[10px] font-black px-2 py-1 rounded-md border border-green-100 uppercase">Berhasil</span></td>
-                            <td class="px-6 py-4 text-sm text-zinc-500">12 Feb 2026</td>
-                            <td class="px-6 py-4 text-sm font-black text-zinc-900 text-right">Rp 1.200.000</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <!-- Desktop Table -->
+                <div class="hidden sm:block">
+                    <table class="w-full text-left">
+                        <thead class="bg-zinc-50 text-zinc-400 text-[10px] uppercase tracking-widest border-b border-zinc-100">
+                            <tr>
+                                <th class="px-6 py-4">Transaksi</th>
+                                <th class="px-6 py-4 text-center">Status</th>
+                                <th class="px-6 py-4">Tanggal</th>
+                                <th class="px-6 py-4 text-right">Nominal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-50">
+                            @forelse($riwayatPembayaran as $tagihan)
+                                <tr class="hover:bg-zinc-50/50 transition-all">
+                                    <td class="px-6 py-4 text-sm font-bold text-gray-900">Sewa Kost {{ $tagihan->periode_bulan }}</td>
+                                    <td class="px-6 py-4 text-center">
+                                        @if($tagihan->status_tagihan == 'Lunas')
+                                            <span class="bg-green-50 text-green-600 text-[10px] font-black px-2 py-1 rounded-md border border-green-100 uppercase">Lunas</span>
+                                        @else
+                                            <span class="bg-amber-50 text-amber-600 text-[10px] font-black px-2 py-1 rounded-md border border-amber-100 uppercase">{{ $tagihan->status_tagihan }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-zinc-500">{{ $tagihan->tanggal_bayar ? \Carbon\Carbon::parse($tagihan->tanggal_bayar)->translatedFormat('d M Y') : '-' }}</td>
+                                    <td class="px-6 py-4 text-sm font-black text-zinc-900 text-right">Rp {{ number_format($tagihan->nominal_tagihan, 0, ',', '.') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-6 py-8 text-center text-sm font-medium text-zinc-400">Belum ada riwayat pembayaran.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Cards -->
+                <div class="sm:hidden divide-y divide-zinc-50">
+                    @forelse($riwayatPembayaran as $tagihan)
+                        <div class="p-4">
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="text-sm font-bold text-gray-900">Sewa Kost {{ $tagihan->periode_bulan }}</p>
+                                @if($tagihan->status_tagihan == 'Lunas')
+                                    <span class="bg-green-50 text-green-600 text-[9px] font-black px-2 py-0.5 rounded border border-green-100 uppercase">Lunas</span>
+                                @else
+                                    <span class="bg-amber-50 text-amber-600 text-[9px] font-black px-2 py-0.5 rounded border border-amber-100 uppercase">{{ $tagihan->status_tagihan }}</span>
+                                @endif
+                            </div>
+                            <div class="flex justify-between items-center mt-1">
+                                <p class="text-xs text-zinc-400">{{ $tagihan->tanggal_bayar ? \Carbon\Carbon::parse($tagihan->tanggal_bayar)->translatedFormat('d M Y') : '-' }}</p>
+                                <p class="text-sm font-black text-zinc-900">Rp {{ number_format($tagihan->nominal_tagihan, 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-6 text-center text-sm text-zinc-400">Belum ada riwayat.</div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
@@ -89,7 +125,7 @@
                     </div>
                     <i class="ph ph-caret-right text-zinc-500"></i>
                 </a>
-                <a href={{ $waAdmin? "https://wa.me/".$waAdmin->nilai : "6281384700455"}} target="_blank" class="group bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 p-5 rounded-2xl transition-all active:scale-95 flex items-center justify-between">
+                <a href="{{ $waAdmin ? 'https://wa.me/'.$waAdmin->nilai : '#' }}" target="_blank" class="group bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 p-5 rounded-2xl transition-all active:scale-95 flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-zinc-900 border border-zinc-200">
                             <i class="ph ph-chat-centered-text text-xl"></i>

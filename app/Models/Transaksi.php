@@ -9,13 +9,14 @@ class Transaksi extends Model
 {
     use HasFactory;
 
-    protected $table = 'transaksi'; //[cite: 6]
+    protected $table = 'log_transaksi';
 
-    // Mematikan incrementing karena primary key-nya string (order_id)
+    // Primary key adalah order_id (string), bukan auto-increment id
+    protected $primaryKey = 'order_id';
     public $incrementing = false;
-    protected $keyType = 'string'; //[cite: 6]
+    protected $keyType = 'string';
 
-    protected $fillable = ['order_id', 'id_tagihan', 'snap_token', 'status_transaksi', 'tipe_pembayaran'];
+    protected $fillable = ['order_id', 'id_tagihan', 'id_waiting_list', 'snap_token', 'status_transaksi', 'tipe_pembayaran'];
 
     public function tagihan()
     {

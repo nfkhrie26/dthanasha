@@ -16,16 +16,46 @@
         .active-link { background-color: #334155; color: white !important; }
         .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Sidebar: hidden on mobile (<768px), visible on md+ */
+        @media (max-width: 767px) {
+            .sidebar-panel {
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .sidebar-panel.sidebar-open {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-overlay {
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .sidebar-overlay.active {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
         @yield('extra_css')
     </style>
 </head>
 <body class="flex min-h-screen text-zinc-800">
 
+    <!-- Mobile Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden" onclick="toggleSidebar()"></div>
+
     @include('components.penghuni_sidebar')
 
-    <main class="flex-1 ml-64 p-8">
+    <main class="flex-1 ml-0 md:ml-64 p-4 sm:p-6 md:p-8">
         <!-- Header Penghuni -->
-        <header class="flex items-center justify-between mb-10 pb-4 border-b border-zinc-200">
+        <header class="flex items-center justify-between mb-8 md:mb-10 pb-4 border-b border-zinc-200 gap-4">
+            <!-- Hamburger Button (Mobile only) -->
+            <button onclick="toggleSidebar()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-zinc-200 card-shadow text-zinc-700 hover:bg-zinc-50 transition-all active:scale-95 shrink-0">
+                <i class="ph ph-list text-xl"></i>
+            </button>
+
             @hasSection('search_input')
                 @yield('search_input')
             @else
@@ -34,18 +64,38 @@
                 </div>
             @endif
             
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <p class="text-sm font-bold text-zinc-900 uppercase">Kamar 100</p>
-                    <p class="text-xs text-zinc-500 uppercase tracking-widest">Misael Feodora</p>
+            <div class="flex items-center gap-4 shrink-0">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold text-zinc-900 uppercase">Penghuni</p>
+                    <p class="text-xs text-zinc-500 uppercase tracking-widest">{{ Auth::user()->name ?? '-' }}</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-[#334155] flex items-center justify-center text-white font-bold border border-zinc-700">MF</div>
+                <div class="w-10 h-10 rounded-lg bg-[#334155] flex items-center justify-center text-white font-bold border border-zinc-700">
+                    {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                </div>
             </div>
         </header>
+
+        <!-- Success/Error Notifications -->
+        @if(session('success'))
+            <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl font-bold text-sm flex items-center gap-2">
+                <i class="ph-fill ph-check-circle text-lg"></i> {{ session('success') }}
+            </div>
+        @endif
 
         @yield('content')
     </main>
 
     @yield('scripts')
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('penghuniSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('sidebar-open');
+            overlay.classList.toggle('active');
+            document.body.classList.toggle('overflow-hidden');
+        }
+    </script>
 </body>
 </html>

@@ -85,7 +85,7 @@ class PenghuniController extends Controller
         ]);
 
         $penghuni = Penghuni::findOrFail($id);
-        $kamarLamaId = $penghuni->kamar_id;
+        $kamarLamaId = $penghuni->id_kamar;
         $kamarBaruId = $request->kamar_id ?: null;
 
         // Cek apakah kamar diubah
@@ -115,8 +115,8 @@ class PenghuniController extends Controller
         $penghuni = Penghuni::findOrFail($id);
 
         // 1. Jika penghuni ini menempati kamar, ubah status kamarnya jadi Kosong dulu
-        if ($penghuni->kamar_id) {
-            Kamar::where('id', $penghuni->kamar_id)->update(['status_kamar' => 'Kosong']);
+        if ($penghuni->id_kamar) {
+            Kamar::where('id', $penghuni->id_kamar)->update(['status_kamar' => 'Kosong']);
         }
 
         $userId = $penghuni->id;

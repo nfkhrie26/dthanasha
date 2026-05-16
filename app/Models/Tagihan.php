@@ -30,6 +30,6 @@ class Tagihan extends Model
     // Relasi ke Log Transaksi
     public function logTransaksi()
     {
-        return $this->hasMany(LogTransaksi::class, 'id_tagihan');
+        return $this->hasMany(Transaksi::class, 'id_tagihan');
     }
 }

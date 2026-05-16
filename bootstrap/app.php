@@ -18,6 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             '/midtrans/webhook',
         ]);
+
+        // Fix redirect loop: ketika user sudah login mengakses halaman guest (/ atau /login),
+        // redirect ke dashboard sesuai role
+        $middleware->redirectGuestsTo('/login');
+        $middleware->redirectUsersTo(fn ($request) => 
+            $request->user()?->role === 'owner' ? '/admin/dashboard' : '/penghuni/dashboard'
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

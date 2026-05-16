@@ -8,121 +8,149 @@
 @endsection
 
 @section('content')
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-10">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
                     <i class="ph ph-users text-2xl text-black font-bold"></i>
                 </div>
             </div>
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Penghuni</p>
-            <p class="text-3xl font-black text-gray-900">80</p>
+            <p class="text-3xl font-black text-gray-900">{{ $totalPenghuni }}</p>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
                     <i class="ph ph-door text-2xl text-black"></i>
                 </div>
             </div>
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Kamar</p>
-            <p class="text-3xl font-black text-gray-900">100</p>
+            <p class="text-3xl font-black text-gray-900">{{ $totalKamar }}</p>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
                     <i class="ph ph-door-open text-2xl text-black"></i>
                 </div>
             </div>
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Kamar Kosong</p>
-            <p class="text-3xl font-black text-black-600">20</p>
+            <p class="text-3xl font-black text-black-600">{{ $kamarKosong }}</p>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl card-shadow border border-gray-50 group transition-all">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 bg-zinc-100 rounded-xl flex items-center justify-center border border-zinc-200 group-hover:bg-zinc-200 transition-colors">
                     <i class="ph ph-wallet text-2xl text-black"></i>
                 </div>
             </div>
             <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Keuntungan</p>
-            <p class="text-2xl font-black text-green-600">Rp 1.200.000</p>
+            <p class="text-xl sm:text-2xl font-black text-green-600">Rp {{ number_format($keuntungan, 0, ',', '.') }}</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-8">
-            <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div class="lg:col-span-2 space-y-6 lg:space-y-8">
+            <div class="bg-white p-5 sm:p-8 rounded-3xl card-shadow border border-gray-50">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-6">Pemasukan & Pengeluaran Mingguan</h3>
-                <div class="h-[280px] w-full"><canvas id="barChart"></canvas></div>
+                <div class="h-[220px] sm:h-[280px] w-full"><canvas id="barChart"></canvas></div>
             </div>
 
             <div class="bg-white rounded-3xl card-shadow border border-gray-50 overflow-hidden">
-                <div class="p-6 border-b border-gray-50 flex justify-between items-center">
+                <div class="p-4 sm:p-6 border-b border-gray-50 flex justify-between items-center">
                     <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide">Transaksi Terakhir</h3>
-                    <a href="{{ url('/riwayat') }}" class="text-xs font-bold text-[#334155] hover:underline uppercase">Lihat Semua</a>
+                    <a href="{{ route('admin.riwayat') }}" class="text-xs font-bold text-[#334155] hover:underline uppercase">Lihat Semua</a>
                 </div>
-                <table class="w-full text-left">
-                    <thead class="bg-zinc-50 text-zinc-400 text-[10px] uppercase tracking-widest border-b border-zinc-100">
-                        <tr>
-                            <th class="px-6 py-4 font-bold">Keterangan</th>
-                            <th class="px-6 py-4 text-center font-bold">Nama</th>
-                            <th class="px-6 py-4 font-bold">Tanggal</th>
-                            <th class="px-6 py-4 text-right font-bold">Nominal</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-zinc-50">
-                        <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Pembayaran bulanan kost</td>
-                            <td class="px-6 py-4 text-sm text-center text-gray-600">Misael Feodora</td>
-                            <td class="px-6 py-4 text-sm text-zinc-500">12 Jan 2026</td>
-                            <td class="px-6 py-4 text-sm font-bold text-green-600 text-right">RP 1.200.000</td>
-                        </tr>
-                        <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Pembayaran bulanan kost</td>
-                            <td class="px-6 py-4 text-sm text-center text-gray-600">Misael Feodora</td>
-                            <td class="px-6 py-4 text-sm text-zinc-500">12 Jan 2026</td>
-                            <td class="px-6 py-4 text-sm font-bold text-green-600 text-right">RP 1.200.000</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <!-- Desktop Table -->
+                <div class="hidden sm:block">
+                    <table class="w-full text-left">
+                        <thead class="bg-zinc-50 text-zinc-400 text-[10px] uppercase tracking-widest border-b border-zinc-100">
+                            <tr>
+                                <th class="px-6 py-4 font-bold">Keterangan</th>
+                                <th class="px-6 py-4 text-center font-bold">Nama</th>
+                                <th class="px-6 py-4 font-bold">Tanggal</th>
+                                <th class="px-6 py-4 text-right font-bold">Nominal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-50">
+                            @forelse($transaksiTerakhir as $trx)
+                                <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer">
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $trx->order_id }}</td>
+                                    <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $trx->tagihan?->penghuni?->nama_penghuni ?? '-' }}</td>
+                                    <td class="px-6 py-4 text-sm text-zinc-500">{{ $trx->created_at->translatedFormat('d M Y') }}</td>
+                                    <td class="px-6 py-4 text-sm font-bold text-green-600 text-right">Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? 0, 0, ',', '.') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-6 py-8 text-center text-sm text-zinc-400 font-medium">Belum ada transaksi.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Cards -->
+                <div class="sm:hidden divide-y divide-zinc-50">
+                    @forelse($transaksiTerakhir as $trx)
+                        <div class="p-4">
+                            <div class="flex justify-between items-start mb-1">
+                                <p class="text-sm font-medium text-gray-900 truncate flex-1">{{ $trx->order_id }}</p>
+                                <p class="text-sm font-bold text-green-600 ml-2">Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? 0, 0, ',', '.') }}</p>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <p class="text-xs text-gray-500">{{ $trx->tagihan?->penghuni?->nama_penghuni ?? '-' }}</p>
+                                <p class="text-xs text-zinc-400">{{ $trx->created_at->translatedFormat('d M Y') }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-6 text-center text-sm text-zinc-400">Belum ada transaksi.</div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
-        <div class="space-y-8">
-            <div class="bg-white p-6 rounded-3xl card-shadow border border-gray-50">
+        <div class="space-y-6 lg:space-y-8">
+            <div class="bg-white p-5 sm:p-6 rounded-3xl card-shadow border border-gray-50">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-6">Lewat Jatuh Tempo</h3>
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between p-3 border border-zinc-100 rounded-2xl bg-zinc-50/50 hover:bg-white transition-all">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-zinc-200 flex items-center justify-center text-zinc-600 font-bold">M</div>
-                            <div><p class="text-sm font-bold text-zinc-900">Michael</p><p class="text-[10px] font-bold text-zinc-400 uppercase">2 hari lalu</p></div>
+                    @forelse($lewatJatuhTempo as $tagihan)
+                        <div class="flex items-center justify-between p-3 border border-zinc-100 rounded-2xl bg-zinc-50/50 hover:bg-white transition-all">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-10 h-10 rounded-xl bg-zinc-200 flex items-center justify-center text-zinc-600 font-bold shrink-0">
+                                    {{ strtoupper(substr($tagihan->penghuni?->nama_penghuni ?? '?', 0, 1)) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-bold text-zinc-900 truncate">{{ $tagihan->penghuni?->nama_penghuni ?? '-' }}</p>
+                                    <p class="text-[10px] font-bold text-zinc-400 uppercase">{{ $tagihan->jatuh_tempo ? \Carbon\Carbon::parse($tagihan->jatuh_tempo)->diffForHumans() : '-' }}</p>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 bg-white border border-zinc-200 text-xs font-black text-gray-900 rounded-lg shadow-sm shrink-0 ml-2">
+                                {{ $tagihan->periode_bulan }}
+                            </span>
                         </div>
-                        <span class="px-2.5 py-1 bg-white border border-zinc-200 text-xs font-black text-gray-900 rounded-lg shadow-sm">KMR 120</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 border border-zinc-100 rounded-2xl bg-zinc-50/50 hover:bg-white transition-all">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-zinc-200 flex items-center justify-center text-zinc-600 font-bold">M</div>
-                            <div><p class="text-sm font-bold text-zinc-900">Michael</p><p class="text-[10px] font-bold text-zinc-400 uppercase">5 hari lalu</p></div>
+                    @empty
+                        <div class="text-center py-4">
+                            <p class="text-sm text-zinc-400 font-medium">Tidak ada yang lewat jatuh tempo 🎉</p>
                         </div>
-                        <span class="px-2.5 py-1 bg-white border border-zinc-200 text-xs font-black text-gray-900 rounded-lg shadow-sm">KMR 100</span>
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
-            <div class="bg-white p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col items-center">
+            <div class="bg-white p-5 sm:p-8 rounded-3xl card-shadow border border-gray-50 flex flex-col items-center">
                 <h3 class="text-sm font-bold text-zinc-900 uppercase tracking-wide mb-8 self-start">Okupansi Kamar</h3>
-                <div class="relative w-40 h-40 mb-8">
+                <div class="relative w-32 h-32 sm:w-40 sm:h-40 mb-8">
                     <canvas id="donutChart"></canvas>
                 </div>
                 <div class="w-full space-y-2">
                     <div class="flex items-center justify-between px-3 py-2 bg-zinc-50 rounded-xl">
                         <span class="flex items-center gap-2 text-xs font-bold text-zinc-600 uppercase tracking-wider"><div class="w-2 h-2 bg-zinc-300 rounded-sm"></div> Tersedia</span>
-                        <span class="text-sm font-black text-zinc-900">20</span>
+                        <span class="text-sm font-black text-zinc-900">{{ $kamarKosong }}</span>
                     </div>
                     <div class="flex items-center justify-between px-3 py-2 bg-zinc-900 rounded-xl">
                         <span class="flex items-center gap-2 text-xs font-bold text-zinc-200 uppercase tracking-wider"><div class="w-2 h-2 bg-white rounded-sm"></div> Terisi</span>
-                        <span class="text-sm font-black text-white">80</span>
+                        <span class="text-sm font-black text-white">{{ $kamarTerisi }}</span>
                     </div>
                 </div>
             </div>
@@ -134,14 +162,19 @@
     <script>
         const formatRupiah = (number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
 
+        // Chart data dari controller
+        const chartLabels = @json($chartLabels);
+        const chartPemasukan = @json($chartPemasukan);
+        const chartPengeluaran = @json($chartPengeluaran);
+
         const barCtx = document.getElementById('barChart').getContext('2d');
         new Chart(barCtx, {
             type: 'bar',
             data: {
-                labels: ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                labels: chartLabels,
                 datasets: [
-                    { label: 'In', data: [4500000, 3200000, 3100000, 4800000, 1500000, 3800000, 3700000], backgroundColor: '#18181B', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 },
-                    { label: 'Out', data: [2000000, 1000000, 2500000, 3500000, 2100000, 2300000, 3000000], backgroundColor: '#E4E4E7', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 }
+                    { label: 'In', data: chartPemasukan, backgroundColor: '#18181B', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 },
+                    { label: 'Out', data: chartPengeluaran, backgroundColor: '#E4E4E7', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.5 }
                 ]
             },
             options: {
@@ -160,7 +193,7 @@
             data: { 
                 labels: ['Tersedia', 'Terisi'], 
                 datasets: [{ 
-                    data: [20, 80], 
+                    data: [{{ $kamarKosong }}, {{ $kamarTerisi }}], 
                     backgroundColor: ['#E4E4E7', '#18181B'], 
                     borderWidth: 0, 
                     hoverOffset: 10,

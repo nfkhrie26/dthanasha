@@ -4,12 +4,6 @@
 @section('search_placeholder', 'Cari nama calon penghuni...')
 
 @section('content')
-    <!-- Notifikasi Sukses -->
-    @if(session('success'))
-        <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl font-bold text-sm flex items-center gap-2">
-            <i class="ph-fill ph-check-circle text-lg"></i> {{ session('success') }}
-        </div>
-    @endif
 
     <!-- KARTU SUMMARY GENDER -->
     <div class="flex gap-6 mb-10">

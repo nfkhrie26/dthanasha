@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tagihan;
-use App\Models\LogTransaksi;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -42,7 +42,7 @@ class PembayaranController extends Controller
         ]);
 
         // Catat riwayat ke log_transaksi[cite: 6]
-        LogTransaksi::create([
+        Transaksi::create([
             'order_id' => 'MANUAL-' . time() . '-' . $tagihan->id, // Format string custom
             'id_tagihan' => $tagihan->id,
             'tipe_pembayaran' => $request->metode_pembayaran,
