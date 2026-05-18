@@ -48,28 +48,43 @@
     <!-- GRID DATA PEMBAYARAN -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @forelse ($tagihans as $tagihan)
+        @php
+            $namaPenghuni = $tagihan->penghuni?->nama_penghuni ?? 'Unknown';
+            $nomorKamar = $tagihan->penghuni?->kamar?->nomor_kamar ?? '-';
+        @endphp
         <div class="bg-white w-full rounded-[1.25rem] p-5 card-shadow border border-zinc-100 flex flex-col gap-5 hover:shadow-lg hover:border-zinc-200 transition-all group">
             <div class="flex justify-between items-start">
-                <!-- Asumsi model Penghuni punya kolom 'kamar_id' atau sejenisnya, sesuaikan 'kamar' jika perlu -->
                 <div class="bg-[#18181B] text-white w-[65px] h-[65px] rounded-2xl flex items-center justify-center font-bold text-xl shadow-sm tracking-wide">
-                    {{ $tagihan->penghuni->nomor_kamar ?? 'N/A' }} 
+                    {{ $nomorKamar }}
                 </div>
                 <div class="text-right flex flex-col items-end">
-                    <p class="text-[15px] font-bold text-zinc-900 mb-1 group-hover:text-[#334155] transition-colors">{{ $tagihan->penghuni->nama ?? 'Unknown' }}</p>
+                    <p class="text-[15px] font-bold text-zinc-900 mb-1 group-hover:text-[#334155] transition-colors">{{ $namaPenghuni }}</p>
                     <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500 bg-zinc-100 px-2.5 py-1 rounded-lg">{{ $tagihan->periode_bulan }}</span>
                 </div>
             </div>
 
+            <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-zinc-500">Nominal</span>
+                <span class="font-black text-zinc-900">Rp {{ number_format($tagihan->nominal_tagihan, 0, ',', '.') }}</span>
+            </div>
+
+            @if($tagihan->jatuh_tempo)
+            <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-zinc-500">Jatuh Tempo</span>
+                <span class="font-bold text-zinc-700">{{ \Carbon\Carbon::parse($tagihan->jatuh_tempo)->translatedFormat('d M Y') }}</span>
+            </div>
+            @endif
+
             @if($tagihan->status_tagihan == 'Belum Lunas')
-                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ $tagihan->penghuni->nama }}', '{{ $tagihan->penghuni->nomor_kamar ?? '-' }}', 'Belum Lunas', '{{ $tagihan->nominal_tagihan }}')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-2 flex justify-center items-center gap-2">
+                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Belum Lunas', '{{ $tagihan->nominal_tagihan }}')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-auto flex justify-center items-center gap-2">
                     <i class="ph-fill ph-warning-circle text-lg"></i> Belum Lunas
                 </button>
             @elseif($tagihan->status_tagihan == 'Menunggu Konfirmasi')
-                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ $tagihan->penghuni->nama }}', '{{ $tagihan->penghuni->nomor_kamar ?? '-' }}', 'Menunggu Konfirmasi', '{{ $tagihan->nominal_tagihan }}')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-2 flex justify-center items-center gap-2">
+                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Menunggu Konfirmasi', '{{ $tagihan->nominal_tagihan }}')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-auto flex justify-center items-center gap-2">
                     <i class="ph-fill ph-clock-countdown text-lg"></i> Menunggu Konfirmasi
                 </button>
             @else
-                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ $tagihan->penghuni->nama }}', '{{ $tagihan->penghuni->nomor_kamar ?? '-' }}', 'Lunas', '{{ $tagihan->nominal_tagihan }}')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-2 flex justify-center items-center gap-2">
+                <button onclick="bukaModalKonfirmasi({{ $tagihan->id }}, '{{ addslashes($namaPenghuni) }}', '{{ $nomorKamar }}', 'Lunas', '{{ $tagihan->nominal_tagihan }}')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl w-full text-sm shadow-md transition-all active:scale-95 mt-auto flex justify-center items-center gap-2">
                     <i class="ph-fill ph-check-circle text-lg"></i> Lunas
                 </button>
             @endif
@@ -130,7 +145,6 @@
 
 @section('scripts')
     <script>
-        // Update URL action form sesuai ID tagihan
         function bukaModalKonfirmasi(id, nama, kamar, status, nominal) { 
             document.getElementById('formPembayaran').action = '/admin/proses_pembayaran/' + id;
             
@@ -166,7 +180,7 @@
                     input.classList.remove('bg-zinc-50', 'text-zinc-500');
                     input.classList.add('bg-white', 'text-zinc-900');
                 });
-                document.getElementById('modal_bukti').removeAttribute('required'); // Bukti bisa opsional jika bayar cash
+                document.getElementById('modal_bukti').removeAttribute('required');
                 
                 const urlNotif = "{{ url('/kirim_notifikasi') }}";
                 actionContainer.innerHTML = `

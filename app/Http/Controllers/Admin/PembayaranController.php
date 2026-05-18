@@ -12,8 +12,8 @@ class PembayaranController extends Controller
 {
     public function index()
     {
-        // Ambil semua tagihan berserta data penghuni (dan kamar jika relasi tersedia di model Penghuni)
-        $tagihans = Tagihan::with('penghuni')->latest()->get();
+        // Ambil semua tagihan + data penghuni + kamar milik penghuni tsb
+        $tagihans = Tagihan::with(['penghuni.kamar'])->latest()->get();
 
         // Hitung statistik untuk Summary Cards
         $sudahMembayar = Tagihan::where('status_tagihan', 'Lunas')->count();
@@ -33,7 +33,7 @@ class PembayaranController extends Controller
 
         $tagihan = Tagihan::findOrFail($id);
 
-        // Update tabel tagihan[cite: 7]
+        // Update tabel tagihan
         $tagihan->update([
             'status_tagihan' => 'Lunas',
             'tanggal_bayar' => now(),
@@ -41,9 +41,9 @@ class PembayaranController extends Controller
             'bukti_transfer' => $request->bukti_pembayaran,
         ]);
 
-        // Catat riwayat ke log_transaksi[cite: 6]
+        // Catat riwayat ke log_transaksi
         Transaksi::create([
-            'order_id' => 'MANUAL-' . time() . '-' . $tagihan->id, // Format string custom
+            'order_id' => 'MANUAL-' . time() . '-' . $tagihan->id,
             'id_tagihan' => $tagihan->id,
             'tipe_pembayaran' => $request->metode_pembayaran,
             'status_transaksi' => 'Settlement', 
