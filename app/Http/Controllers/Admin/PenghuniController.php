@@ -16,7 +16,7 @@ class PenghuniController extends Controller
     public function index()
     {
         // Ambil data penghuni beserta data kamar dan usernya
-        $penghunis = Penghuni::with(['kamar', 'user'])->latest()->get();
+        $penghunis = Penghuni::with(['kamar', 'user'])->latest()->paginate(5);
         $semuaKamar = Kamar::all();
 
         // Hitung total pria dan wanita untuk Summary Cards

@@ -101,19 +101,10 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="p-6 border-t border-zinc-100 flex items-center justify-between bg-white">
-            <p class="text-xs font-semibold text-zinc-400">Total: {{ count($antrean ?? []) }} Antrean</p>
-            <div class="flex gap-2">
-                <button
-                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 hover:bg-zinc-50 transition-all"><i
-                        class="ph ph-caret-left font-bold"></i></button>
-                <button
-                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#334155] text-white text-xs font-bold shadow-sm">1</button>
-                <button
-                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-600 hover:bg-zinc-50 text-xs font-bold transition-all">2</button>
-                <button
-                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 hover:bg-zinc-50 transition-all"><i
-                        class="ph ph-caret-right font-bold"></i></button>
+        <div class="p-6 border-t border-zinc-100 bg-white flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-xs font-semibold text-zinc-400">Total: {{ $antrean->total() }} Antrean</p>
+            <div class="w-full md:w-auto overflow-x-auto no-scrollbar">
+                {{ $antrean->appends(request()->query())->links() }}
             </div>
         </div>
     </div>
