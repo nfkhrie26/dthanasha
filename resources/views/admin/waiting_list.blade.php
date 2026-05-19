@@ -36,11 +36,11 @@
         <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50">
             <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Data Waiting List</h3>
             <div class="flex gap-3">
-                <select
+                <select id="filterGender" onchange="filterTabelGender()"
                     class="text-sm border border-zinc-200 bg-white rounded-lg px-3 py-2 outline-none font-semibold text-gray-600 cursor-pointer focus:ring-2 focus:ring-[#334155]">
-                    <option>Semua Gender</option>
-                    <option>Pria</option>
-                    <option>Wanita</option>
+                    <option value="Semua">Semua Gender</option>
+                    <option value="Pria">Pria</option>
+                    <option value="Wanita">Wanita</option>
                 </select>
                 <button onclick="bukaModalTambah()"
                     class="bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-md active:scale-95">
@@ -62,7 +62,7 @@
                 </thead>
                 <tbody class="divide-y divide-zinc-100">
                     @forelse($antrean as $index => $a)
-                        <tr class="hover:bg-zinc-50 transition-colors group">
+                        <tr class="hover:bg-zinc-50 transition-colors group waiting-list-row" data-gender="{{ $a->jenis_kelamin }}">
                             <td class="px-6 py-4 text-sm font-bold text-zinc-400 text-center">{{ $index + 1 }}</td>
                             <td
                                 class="px-6 py-4 text-sm font-medium text-zinc-900 group-hover:text-[#334155] transition-colors">
@@ -221,6 +221,20 @@
 
         function tutupModal(modalId) {
             document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function filterTabelGender() {
+            const filterValue = document.getElementById('filterGender').value;
+            const rows = document.querySelectorAll('.waiting-list-row');
+            
+            rows.forEach(row => {
+                const gender = row.getAttribute('data-gender');
+                if (filterValue === 'Semua' || filterValue === gender) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
     </script>
 @endsection
