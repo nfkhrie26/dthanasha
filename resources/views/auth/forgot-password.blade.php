@@ -1,25 +1,41 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lupa Password - Dthanasha Kost</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .font-cursive { font-family: 'Great Vibes', cursive; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen bg-cover bg-center flex items-center justify-center relative" style="background-image: url('https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=2070&auto=format&fit=crop');">
+
+    <div class="absolute inset-0 bg-white/20 backdrop-blur-[2px]"></div>
+
+    <div class="relative z-10 bg-white w-[90%] max-w-sm py-12 px-8 flex flex-col items-center shadow-2xl">
+        <h1 class="font-cursive text-5xl mb-2 text-black tracking-wide">Reset</h1>
+        <h2 class="text-lg font-bold mb-4 text-black uppercase tracking-tight">Lupa Password</h2>
+        <p class="text-[11px] text-gray-500 text-center mb-6 px-4">Masukkan email yang terdaftar di akun Anda. Kami akan mengirim link untuk reset password.</p>
+
+        <x-auth-session-status class="mb-4 text-xs font-bold text-green-600 text-center" :status="session('status')" />
+
+        <form method="POST" action="{{ route('password.email') }}" class="w-full flex flex-col items-center">
+            @csrf
+            <div class="w-full max-w-[250px] mb-6">
+                <label for="email" class="block text-[11px] font-bold text-black mb-1 ml-3">Email</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus class="w-full bg-black text-white rounded-full px-6 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-300 transition-all">
+                <x-input-error :messages="$errors->get('email')" class="mt-1 ml-3 text-[10px] text-red-500 font-bold" />
+            </div>
+
+            <button type="submit" class="bg-[#e0e0e0] text-black font-bold text-sm py-2 px-10 rounded-md hover:bg-[#d1d1d1] active:scale-95 transition-all shadow-sm mb-4">
+                Kirim Link Reset
+            </button>
+
+            <a href="{{ route('login') }}" class="text-[11px] font-bold text-gray-500 hover:text-black transition-colors">← Kembali ke Login</a>
+        </form>
     </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</body>
+</html>

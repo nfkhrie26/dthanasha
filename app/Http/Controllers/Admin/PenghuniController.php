@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Penghuni;
 use App\Models\Kamar;
 use App\Models\User;
+use App\Models\WaitingList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,8 +23,11 @@ class PenghuniController extends Controller
         $totalPria = Penghuni::where('jenis_kelamin', 'L')->count();
         $totalWanita = Penghuni::where('jenis_kelamin', 'P')->count();
 
+        // Ambil data waiting list untuk fitur import
+        $waitingList = WaitingList::orderBy('created_at', 'desc')->get();
+
         // Kirim semua variabel ke view
-        return view('admin.data_penghuni', compact('penghunis', 'semuaKamar', 'totalPria', 'totalWanita'));
+        return view('admin.data_penghuni', compact('penghunis', 'semuaKamar', 'totalPria', 'totalWanita', 'waitingList'));
     }
 
     // 2. Fungsi Tambah Penghuni Baru
@@ -51,6 +55,7 @@ class PenghuniController extends Controller
             'jk' => 'required|string',
             'kontak' => 'required|string',
             'kontak_ortu' => 'required|string',
+            'email' => 'required|email|unique:users,email',
             'nama_akun' => 'required|string|unique:users,username', // Pastikan tabel users ada kolom 'username'
             'password' => 'required|string|min:6',
         ]);
@@ -59,6 +64,7 @@ class PenghuniController extends Controller
         $user = User::create([
             'name' => $request->nama,
             'username' => $request->nama_akun,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'penghuni', // Buka komen ini jika kamu punya kolom role di tabel users
         ]);
@@ -73,6 +79,11 @@ class PenghuniController extends Controller
             'id_user' => $user->id, // Sambungkan ke akun yang baru dibuat
         ]);
 
+        // C. Jika berasal dari import waiting list, hapus data di waiting list
+        if ($request->filled('waiting_list_id')) {
+            WaitingList::where('id', $request->waiting_list_id)->delete();
+        }
+
         return redirect()->back()->with('success', 'Akun penghuni baru berhasil ditambahkan!');
     }
 
@@ -82,6 +93,11 @@ class PenghuniController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kamar_id' => 'nullable|exists:kamar,id',
+            'usia' => 'nullable|integer|min:1',
+            'jk' => 'nullable|string|in:L,P',
+            'kontak' => 'nullable|string|max:20',
+            'kontak_ortu' => 'nullable|string|max:20',
+            'email' => 'nullable|email',
         ]);
 
         $penghuni = Penghuni::findOrFail($id);
@@ -100,11 +116,23 @@ class PenghuniController extends Controller
             }
         }
 
-        // Update nama dan ID kamar di tabel penghuni
+        // Update semua field di tabel penghuni
         $penghuni->update([
             'nama_penghuni' => $request->nama,
             'id_kamar' => $kamarBaruId,
+            'jenis_kelamin' => $request->jk ?? $penghuni->jenis_kelamin,
+            'usia' => $request->usia ?? $penghuni->usia,
+            'no_telepon' => $request->kontak ?? $penghuni->no_telepon,
+            'no_telepon_orangtua' => $request->kontak_ortu ?? $penghuni->no_telepon_orangtua,
         ]);
+
+        // Update email di tabel users jika diisi
+        if ($request->filled('email') && $penghuni->id_user) {
+            $user = User::find($penghuni->id_user);
+            if ($user) {
+                $user->update(['email' => $request->email]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Data penghuni dan status kamar berhasil diupdate!');
     }
@@ -119,7 +147,7 @@ class PenghuniController extends Controller
             Kamar::where('id', $penghuni->id_kamar)->update(['status_kamar' => 'Kosong']);
         }
 
-        $userId = $penghuni->id;
+        $userId = $penghuni->id_user;
         $namaPenghuni = $penghuni->nama_penghuni;
         
         // 2. Hapus profil penghuninya
@@ -127,8 +155,7 @@ class PenghuniController extends Controller
 
         // 3. Hapus akun login-nya dari tabel users secara permanen
         if ($userId) {
-            // Jika data baru (sudah ada relasi user_id)
-            User::where('id', $id)->delete();
+            User::where('id', $userId)->delete();
         } else {
             // FALLBACK UNTUK DATA LAMA: 
             // Jika belum ada user_id, kita cari berdasarkan namanya dan hapus

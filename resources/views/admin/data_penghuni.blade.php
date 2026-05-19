@@ -37,11 +37,14 @@
         <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-gray-50">
             <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Daftar Penghuni Aktif</h3>
             <div class="flex gap-3">
-                <select class="text-sm border border-zinc-200 bg-white rounded-lg px-3 py-2 outline-none font-semibold text-gray-600 cursor-pointer focus:ring-2 focus:ring-[#334155]">
-                    <option>Semua Gender</option>
-                    <option>Pria</option>
-                    <option>Wanita</option>
+                <select id="filterGender" onchange="filterTabelGender()" class="text-sm border border-zinc-200 bg-white rounded-lg px-3 py-2 outline-none font-semibold text-gray-600 cursor-pointer focus:ring-2 focus:ring-[#334155]">
+                    <option value="Semua">Semua Gender</option>
+                    <option value="Pria">Pria</option>
+                    <option value="Wanita">Wanita</option>
                 </select>
+                <button onclick="bukaModalImport()" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 border border-zinc-200 active:scale-95">
+                    <i class="fas fa-file-import"></i> Import Waiting List
+                </button>
                 <button onclick="bukaModalTambah()" class="bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-md active:scale-95">
                     <i class="fas fa-plus"></i> Tambah Akun
                 </button>
@@ -65,7 +68,7 @@
                 </thead>
                 <tbody class="divide-y divide-zinc-200">
                     @forelse($penghunis as $index => $p)
-                        <tr class="hover:bg-zinc-50 transition-colors group">
+                        <tr class="hover:bg-zinc-50 transition-colors group penghuni-row" data-gender="{{ $p->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}">
                             <td class="px-6 py-4 text-sm font-bold text-gray-400 text-center">{{ $index + 1 }}</td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900 group-hover:text-[#334155] transition-colors">{{ $p->nama_penghuni }}</td>
                             <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $p->usia }}</td>
@@ -83,7 +86,7 @@
                                 <span class="text-xs font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded-lg border border-zinc-200">{{ '@' . ($p->user->username ?? 'tidak_ada') }}</span>
                             </td>
                             <td class="px-6 py-4 flex justify-center gap-2">
-                                <button onclick="bukaModalEditPenghuni({{ $p->id }}, '{{ $p->nama_penghuni }}', '{{ $p->id_kamar }}')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"><i class="fas fa-edit"></i> Edit</button>
+                                <button onclick="bukaModalEditPenghuni({{ $p->id }}, '{{ $p->nama_penghuni }}', '{{ $p->id_kamar }}', '{{ $p->jenis_kelamin }}', '{{ $p->usia }}', '{{ $p->no_telepon }}', '{{ $p->no_telepon_orangtua }}', '{{ $p->user->email ?? '' }}')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"><i class="fas fa-edit"></i> Edit</button>
                                 <button onclick="bukaModalHapus({{ $p->id }}, '{{ $p->nama_penghuni }}', '{{ $p->usia }}', '{{ $p->kamar->nomor_kamar ?? '-' }}')" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"><i class="fas fa-trash"></i> Hapus</button>
                             </td>
                         </tr>
@@ -112,20 +115,21 @@
     <div id="modalTambah" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
         <div class="bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
             <h2 class="text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Tambah Akun Baru</h2>
-            <form action="{{ route('admin.tambah-akun') }}" method="POST" class="space-y-4">
+            <form id="formTambahAkun" action="{{ route('admin.tambah-akun') }}" method="POST" class="space-y-4">
                 @csrf
+                <input type="hidden" name="waiting_list_id" id="tambah_wl_id" value="">
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Lengkap</label>
-                    <input type="text" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                    <input type="text" name="nama" id="tambah_nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Usia</label>
-                        <input type="number" name="usia" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                        <input type="number" name="usia" id="tambah_usia" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Gender</label>
-                        <select name="jk" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                        <select name="jk" id="tambah_jk" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                             <option value="L">Pria</option>
                             <option value="P">Wanita</option>
                         </select>
@@ -134,7 +138,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Kontak Penghuni</label>
-                        <input type="text" name="kontak" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                        <input type="text" name="kontak" id="tambah_kontak" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">No. Orang Tua</label>
@@ -150,6 +154,10 @@
                         <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Akun (Username)</label>
                         <input type="text" name="nama_akun" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                     </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Email</label>
+                    <input type="email" name="email" id="tambah_email" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Password Login</label>
@@ -170,16 +178,45 @@
             <form id="formEditPenghuni" method="POST" class="space-y-4">
                 @csrf @method('PUT')
                 
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Penghuni</label>
-                    <!-- Sesuaikan attribute name dengan field yang ditangkap di Controller (misal 'nama') -->
-                    <input type="text" id="edit_nama" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Penghuni</label>
+                        <input type="text" id="edit_nama" name="nama" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Usia</label>
+                        <input type="number" id="edit_usia" name="usia" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Gender</label>
+                        <select id="edit_jk" name="jk" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required>
+                            <option value="L">Pria</option>
+                            <option value="P">Wanita</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Kontak</label>
+                        <input type="text" id="edit_kontak" name="kontak" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">No. Orang Tua</label>
+                        <input type="text" id="edit_kontak_ortu" name="kontak_ortu" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Email</label>
+                        <input type="email" id="edit_email" name="email" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm">
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Pilih Kamar</label>
                     <select id="edit_kamar_id" name="kamar_id" class="w-full px-4 py-3 rounded-xl bg-white border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all font-bold text-zinc-900 text-sm">
-                        <!-- Option akan di-generate otomatis oleh JavaScript -->
                     </select>
                     <p class="text-[10px] text-zinc-400 mt-2 ml-1">*Hanya menampilkan kamar yang kosong.</p>
                 </div>
@@ -227,36 +264,78 @@
             </form>
         </div>
     </div>
+    </div>
+
+    <!-- MODAL IMPORT WAITING LIST -->
+    <div id="modalImport" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl scale-95 transition-all max-h-[90vh] overflow-y-auto no-scrollbar">
+            <h2 class="text-xl font-black text-gray-900 mb-6 text-center uppercase tracking-wide">Import dari Waiting List</h2>
+            <p class="text-sm text-zinc-500 mb-4 text-center">Pilih calon penghuni untuk dibuatkan akun.</p>
+            <div class="space-y-3 max-h-60 overflow-y-auto">
+                @forelse($waitingList as $wl)
+                    <button type="button" onclick="pilihWaitingList({{ $wl->id }}, '{{ $wl->nama }}', '{{ $wl->jenis_kelamin }}', '{{ $wl->no_telepon }}')"
+                        class="w-full text-left p-4 rounded-2xl border border-zinc-200 hover:border-zinc-400 hover:bg-zinc-50 transition-all flex justify-between items-center group">
+                        <div>
+                            <p class="text-sm font-bold text-zinc-900 group-hover:text-[#334155]">{{ $wl->nama }}</p>
+                            <p class="text-xs text-zinc-500">{{ $wl->jenis_kelamin }} · {{ $wl->no_telepon }}</p>
+                        </div>
+                        <i class="fas fa-arrow-right text-zinc-300 group-hover:text-zinc-600 transition-colors"></i>
+                    </button>
+                @empty
+                    <div class="text-center py-6">
+                        <p class="text-sm text-zinc-400 font-medium">Waiting list kosong.</p>
+                    </div>
+                @endforelse
+            </div>
+            <button type="button" onclick="tutupModal('modalImport')" class="w-full mt-6 px-4 py-3 rounded-xl bg-zinc-100 text-zinc-600 font-bold hover:bg-zinc-200 transition-all text-sm uppercase tracking-wide">Tutup</button>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
     <script>
-        // Tangkap data semua kamar dari Controller, gunakan fallback array kosong jika tidak ada
         const semuaKamar = @json($semuaKamar ?? []);
 
         function bukaModalTambah() { 
+            // Reset form
+            document.getElementById('formTambahAkun').reset();
+            document.getElementById('tambah_wl_id').value = '';
             document.getElementById('modalTambah').classList.remove('hidden'); 
         }
 
-        // Fungsi Buka Modal Edit (Dengan Filter Kamar Kosong)
-        function bukaModalEditPenghuni(id, nama, kamarIdSaatIni) {
-            // Set action URL form Edit
+        function bukaModalImport() {
+            document.getElementById('modalImport').classList.remove('hidden');
+        }
+
+        // Pilih dari Waiting List → auto-fill form Tambah
+        function pilihWaitingList(id, nama, gender, telepon) {
+            tutupModal('modalImport');
+            document.getElementById('tambah_wl_id').value = id;
+            document.getElementById('tambah_nama').value = nama;
+            document.getElementById('tambah_jk').value = (gender === 'Pria') ? 'L' : 'P';
+            document.getElementById('tambah_kontak').value = telepon;
+            document.getElementById('modalTambah').classList.remove('hidden');
+        }
+
+        // Edit Modal - semua field
+        function bukaModalEditPenghuni(id, nama, kamarIdSaatIni, jenisKelamin, usia, kontak, kontakOrtu, email) {
             document.getElementById('formEditPenghuni').action = '/admin/edit_penghuni/' + id;
             document.getElementById('edit_nama').value = nama;
+            document.getElementById('edit_jk').value = jenisKelamin;
+            document.getElementById('edit_usia').value = usia;
+            document.getElementById('edit_kontak').value = kontak;
+            document.getElementById('edit_kontak_ortu').value = kontakOrtu;
+            document.getElementById('edit_email').value = email;
 
             const selectKamar = document.getElementById('edit_kamar_id');
             selectKamar.innerHTML = '<option value="">-- Tidak Memilih Kamar --</option>';
 
-            // Mapping kamar yang kosong atau kamar miliknya saat ini
             semuaKamar.forEach(kamar => {
                 if (kamar.status_kamar === 'Kosong' || kamar.id == kamarIdSaatIni) {
                     let option = document.createElement('option');
                     option.value = kamar.id;
                     option.text = `Kamar ${kamar.nomor_kamar} (${kamar.jenis_kamar})`;
-                    
-                    if (kamar.id == kamarIdSaatIni) {
-                        option.selected = true;
-                    }
+                    if (kamar.id == kamarIdSaatIni) option.selected = true;
                     selectKamar.appendChild(option);
                 }
             });
@@ -264,11 +343,8 @@
             document.getElementById('modalEditPenghuni').classList.remove('hidden');
         }
 
-        // Fungsi Buka Modal Hapus
         function bukaModalHapus(id, nama, usia, kamar) {
-            // Set action URL form Hapus
             document.getElementById('formHapusPenghuni').action = '/admin/hapus_penghuni/' + id;
-            
             document.getElementById('hapus_nama').value = nama;
             document.getElementById('hapus_usia').value = usia;
             document.getElementById('hapus_kamar').value = kamar;
@@ -277,6 +353,15 @@
 
         function tutupModal(modalId) { 
             document.getElementById(modalId).classList.add('hidden'); 
+        }
+
+        function filterTabelGender() {
+            const filterValue = document.getElementById('filterGender').value;
+            const rows = document.querySelectorAll('.penghuni-row');
+            rows.forEach(row => {
+                const gender = row.getAttribute('data-gender');
+                row.style.display = (filterValue === 'Semua' || filterValue === gender) ? '' : 'none';
+            });
         }
     </script>
 @endsection

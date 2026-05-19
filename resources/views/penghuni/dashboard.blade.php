@@ -125,15 +125,30 @@
                     </div>
                     <i class="ph ph-caret-right text-zinc-500"></i>
                 </a>
-                <a href="{{ $waAdmin ? 'https://wa.me/'.$waAdmin->nilai : '#' }}" target="_blank" class="group bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 p-5 rounded-2xl transition-all active:scale-95 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-zinc-900 border border-zinc-200">
-                            <i class="ph ph-chat-centered-text text-xl"></i>
+                @if($tagihanSaatIni)
+                    <div class="group relative bg-zinc-100 border border-zinc-200 p-5 rounded-2xl flex items-center justify-between cursor-not-allowed opacity-60">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-zinc-400 border border-zinc-200">
+                                <i class="ph ph-lock text-xl"></i>
+                            </div>
+                            <span class="text-zinc-400 font-bold text-sm">Lapor Keluhan</span>
                         </div>
-                        <span class="text-zinc-900 font-bold text-sm">Lapor Keluhan</span>
+                        <i class="ph ph-caret-right text-zinc-300"></i>
+                        <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-zinc-900 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                            Lunasi tagihan dulu ya 😊
+                        </div>
                     </div>
-                    <i class="ph ph-caret-right text-zinc-400"></i>
-                </a>
+                @else
+                    <a href="{{ $waAdmin ? 'https://wa.me/'.$waAdmin->nilai : '#' }}" target="_blank" class="group bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 p-5 rounded-2xl transition-all active:scale-95 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-zinc-900 border border-zinc-200">
+                                <i class="ph ph-chat-centered-text text-xl"></i>
+                            </div>
+                            <span class="text-zinc-900 font-bold text-sm">Lapor Keluhan</span>
+                        </div>
+                        <i class="ph ph-caret-right text-zinc-400"></i>
+                    </a>
+                @endif
             </div>
         </div>
     </div>

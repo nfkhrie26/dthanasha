@@ -41,11 +41,12 @@
             </div>
 
             <!-- Fitur Remember Me bawaan Breeze gua adaptasi ke style lu -->
-            <div class="w-full max-w-[250px] flex items-center mb-8 ml-3">
-                <label for="remember_me" class="inline-flex items-center cursor-pointer">
+            <div class="w-full max-w-[250px] flex items-center justify-between mb-8">
+                <label for="remember_me" class="inline-flex items-center cursor-pointer ml-3">
                     <input id="remember_me" type="checkbox" class="rounded border-gray-400 text-black focus:ring-black bg-gray-100" name="remember">
                     <span class="ms-2 text-[11px] font-bold text-gray-600">Remember me</span>
                 </label>
+                <a href="{{ route('password.request') }}" class="text-[11px] font-bold text-gray-500 hover:text-black transition-colors mr-3">Lupa Password?</a>
             </div>
 
             <button type="submit" class="bg-[#e0e0e0] text-black font-bold text-sm py-2 px-14 rounded-md hover:bg-[#d1d1d1] active:scale-95 transition-all shadow-sm">

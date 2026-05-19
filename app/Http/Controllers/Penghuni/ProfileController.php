@@ -35,6 +35,7 @@ class ProfileController extends Controller
             'kontak'     => 'required|string|max:20',
             'kontak_ortu'=> 'required|string|max:20',
             'jk'         => 'required|string|in:L,P',
+            'email'      => 'required|email',
         ]);
 
         // Update data penghuni
@@ -48,8 +49,9 @@ class ProfileController extends Controller
             ]);
         }
 
-        // Update nama di user
+        // Update nama dan email di user
         $user->name = $request->nama;
+        $user->email = $request->email;
 
         // Update password jika diisi
         if ($request->filled('password')) {

@@ -49,6 +49,7 @@
                         <div><p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Jenis Kelamin</p><p class="text-sm font-bold text-zinc-900">{{ $penghuni?->jenis_kelamin == 'L' ? 'Pria' : ($penghuni?->jenis_kelamin == 'P' ? 'Wanita' : '-') }}</p></div>
                         <div><p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Kontak</p><p class="text-sm font-bold text-zinc-900">{{ $penghuni?->no_telepon ?? '-' }}</p></div>
                         <div><p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Nomor Orang Tua</p><p class="text-sm font-bold text-zinc-900">{{ $penghuni?->no_telepon_orangtua ?? '-' }}</p></div>
+                        <div><p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Email</p><p class="text-sm font-bold text-zinc-900">{{ $user->email ?? '-' }}</p></div>
                         <div><p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Nama Akun</p><p class="text-sm font-bold text-zinc-900">{{ $user->username ?? '-' }}</p></div>
                         <div><p class="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2">Password</p><p class="text-sm font-bold text-zinc-900 tracking-widest">***********</p></div>
                     </div>
@@ -70,6 +71,7 @@
                         </div>
                         <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Kontak</label><input type="text" name="kontak" value="{{ $penghuni?->no_telepon ?? '' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required></div>
                         <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nomor Orang Tua</label><input type="text" name="kontak_ortu" value="{{ $penghuni?->no_telepon_orangtua ?? '' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required></div>
+                        <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Email</label><input type="email" name="email" value="{{ $user->email ?? '' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#334155] transition-all text-sm font-bold text-zinc-900" required></div>
                         <div><label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Nama Akun</label><input type="text" value="{{ $user->username ?? '-' }}" class="w-full px-4 py-3 rounded-xl bg-zinc-100 border border-zinc-200 text-zinc-500 cursor-not-allowed text-sm font-bold" readonly></div>
                         <div>
                             <label class="block text-[11px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2">Password</label>

@@ -77,10 +77,10 @@
                         <tbody class="divide-y divide-zinc-50">
                             @forelse($transaksiTerakhir as $trx)
                                 <tr class="hover:bg-zinc-50/50 transition-all cursor-pointer">
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $trx->order_id }}</td>
-                                    <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $trx->tagihan?->penghuni?->nama_penghuni ?? '-' }}</td>
-                                    <td class="px-6 py-4 text-sm text-zinc-500">{{ $trx->created_at->translatedFormat('d M Y') }}</td>
-                                    <td class="px-6 py-4 text-sm font-bold text-green-600 text-right">Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? 0, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $trx->id_tagihan ? $trx->order_id : $trx->kegiatan }}</td>
+                                    <td class="px-6 py-4 text-sm text-center text-gray-600">{{ $trx->id_tagihan ? ($trx->tagihan?->penghuni?->nama_penghuni ?? '-') : ($trx->nama ?? 'Pemilik') }}</td>
+                                    <td class="px-6 py-4 text-sm text-zinc-500">{{ $trx->id_tagihan ? $trx->created_at->translatedFormat('d M Y') : \Carbon\Carbon::parse($trx->waktu)->translatedFormat('d M Y') }}</td>
+                                    <td class="px-6 py-4 text-sm font-bold text-right {{ $trx->id_tagihan ? 'text-green-600' : 'text-red-500' }}">Rp {{ number_format($trx->id_tagihan ? ($trx->tagihan?->nominal_tagihan ?? 0) : $trx->nominal, 0, ',', '.') }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -96,12 +96,12 @@
                     @forelse($transaksiTerakhir as $trx)
                         <div class="p-4">
                             <div class="flex justify-between items-start mb-1">
-                                <p class="text-sm font-medium text-gray-900 truncate flex-1">{{ $trx->order_id }}</p>
-                                <p class="text-sm font-bold text-green-600 ml-2">Rp {{ number_format($trx->tagihan?->nominal_tagihan ?? 0, 0, ',', '.') }}</p>
+                                <p class="text-sm font-medium text-gray-900 truncate flex-1">{{ $trx->id_tagihan ? $trx->order_id : $trx->kegiatan }}</p>
+                                <p class="text-sm font-bold ml-2 {{ $trx->id_tagihan ? 'text-green-600' : 'text-red-500' }}">Rp {{ number_format($trx->id_tagihan ? ($trx->tagihan?->nominal_tagihan ?? 0) : $trx->nominal, 0, ',', '.') }}</p>
                             </div>
                             <div class="flex justify-between items-center">
-                                <p class="text-xs text-gray-500">{{ $trx->tagihan?->penghuni?->nama_penghuni ?? '-' }}</p>
-                                <p class="text-xs text-zinc-400">{{ $trx->created_at->translatedFormat('d M Y') }}</p>
+                                <p class="text-xs text-gray-500">{{ $trx->id_tagihan ? ($trx->tagihan?->penghuni?->nama_penghuni ?? '-') : ($trx->nama ?? 'Pemilik') }}</p>
+                                <p class="text-xs text-zinc-400">{{ $trx->id_tagihan ? $trx->created_at->translatedFormat('d M Y') : \Carbon\Carbon::parse($trx->waktu)->translatedFormat('d M Y') }}</p>
                             </div>
                         </div>
                     @empty

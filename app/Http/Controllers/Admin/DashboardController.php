@@ -20,7 +20,9 @@ class DashboardController extends Controller
 
         // Keuntungan
         $totalPemasukan = Tagihan::where('status_tagihan', 'Lunas')->sum('nominal_tagihan');
-        $totalPengeluaran = Tagihan::where('status_tagihan', 'Belum Lunas')->sum('nominal_tagihan');
+        $totalPengeluaran = Transaksi::whereNull('id_tagihan')
+            ->whereIn('status_transaksi', ['settlement', 'berhasil', 'Lunas', 'Berhasil'])
+            ->sum('nominal');
         $keuntungan = $totalPemasukan - $totalPengeluaran;
 
         // Transaksi terakhir
@@ -47,9 +49,10 @@ class DashboardController extends Controller
                 ->whereDate('tanggal_bayar', $date->toDateString())
                 ->sum('nominal_tagihan');
 
-            $chartPengeluaran[] = Tagihan::where('status_tagihan', 'Belum Lunas')
-                ->whereDate('jatuh_tempo', $date->toDateString())
-                ->sum('nominal_tagihan');
+            $chartPengeluaran[] = Transaksi::whereNull('id_tagihan')
+                ->whereIn('status_transaksi', ['settlement', 'berhasil', 'Lunas', 'Berhasil'])
+                ->whereDate('waktu', $date->toDateString())
+                ->sum('nominal');
         }
 
         return view('admin.dashboard', compact(
