@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Dthanasha Kost</title>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Panggil Vite buat nge-load Tailwind -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         .font-cursive { font-family: 'Great Vibes', cursive; }
@@ -20,7 +19,6 @@
         <h1 class="font-cursive text-6xl mb-2 text-black tracking-wide">Welcome</h1>
         <h2 class="text-xl font-bold mb-8 text-black uppercase tracking-tight">Dthanasha Kost</h2>
 
-        <!-- Session Status (Misal abis reset password) -->
         <x-auth-session-status class="mb-4 text-xs font-bold text-green-600 text-center" :status="session('status')" />
 
         <form action="{{ route('login') }}" method="POST" class="w-full flex flex-col items-center">
@@ -28,9 +26,7 @@
             
             <div class="w-full max-w-[250px] mb-4">
                 <label for="login" class="block text-[11px] font-bold text-black mb-1 ml-3">Username</label>
-                <!-- Tambahin value old('username') biar inputan gak ilang kalo salah password -->
                 <input type="text" id="login" name="login" value="{{ old('username') }}" required autofocus autocomplete="username" class="w-full bg-black text-white rounded-full px-6 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gray-300 transition-all">
-                <!-- Komponen Error Breeze yang udah disesuaikan ukurannya -->
                 <x-input-error :messages="$errors->get('login')" class="mt-1 ml-3 text-[10px] text-red-500 font-bold" />
             </div>
 
@@ -40,7 +36,6 @@
                 <x-input-error :messages="$errors->get('password')" class="mt-1 ml-3 text-[10px] text-red-500 font-bold" />
             </div>
 
-            <!-- Fitur Remember Me bawaan Breeze gua adaptasi ke style lu -->
             <div class="w-full max-w-[250px] flex items-center justify-between mb-8">
                 <label for="remember_me" class="inline-flex items-center cursor-pointer ml-3">
                     <input id="remember_me" type="checkbox" class="rounded border-gray-400 text-black focus:ring-black bg-gray-100" name="remember">
