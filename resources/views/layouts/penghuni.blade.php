@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src 'self' https://app.sandbox.midtrans.com; script-src 'self' 'unsafe-inline' https://app.sandbox.midtrans.com;">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dthanasha Kost')</title>
     
