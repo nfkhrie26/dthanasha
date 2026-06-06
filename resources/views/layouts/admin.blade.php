@@ -56,7 +56,7 @@
 
             <div class="relative w-full max-w-md md:w-96">
                 <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-lg"></i>
-                <input type="text" placeholder="@yield('search_placeholder', 'Cari data...')" class="w-full pl-10 pr-4 py-2.5 bg-white border border-zinc-200 rounded-xl focus:outline-none focus:border-[#334155] focus:ring-1 focus:ring-[#334155] transition-all text-sm card-shadow font-medium">
+                <input type="text" id="globalSearch" placeholder="@yield('search_placeholder', 'Cari data...')" class="w-full pl-10 pr-4 py-2.5 bg-white border border-zinc-200 rounded-xl focus:outline-none focus:border-[#334155] focus:ring-1 focus:ring-[#334155] transition-all text-sm card-shadow font-medium">
             </div>
             
             <div class="flex items-center gap-4 shrink-0">
@@ -95,6 +95,61 @@
     @yield('scripts')
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('globalSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const filter = this.value.toLowerCase();
+                    
+                    // Filter Desktop Tables
+                    const tables = document.querySelectorAll('table tbody');
+                    tables.forEach(tbody => {
+                        const rows = tbody.querySelectorAll('tr');
+                        let counter = 1;
+                        rows.forEach(row => {
+                            // Skip empty state rows
+                            if (row.querySelector('td') && row.querySelector('td').hasAttribute('colspan')) {
+                                return;
+                            }
+                            const text = row.textContent.toLowerCase();
+                            if (text.includes(filter)) {
+                                row.style.display = '';
+                                // Re-numbering if the first column is purely numeric
+                                const firstTd = row.querySelector('td:first-child');
+                                if (firstTd && firstTd.children.length === 0) {
+                                    const num = parseInt(firstTd.textContent.trim());
+                                    if (!isNaN(num)) {
+                                        firstTd.textContent = counter++;
+                                    }
+                                }
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+                    });
+
+                    // Filter Mobile Cards (typically in these containers)
+                    const mobileContainers = document.querySelectorAll('.sm\\:hidden.divide-y, .grid.grid-cols-1.md\\:grid-cols-2');
+                    mobileContainers.forEach(container => {
+                        const cards = container.children;
+                        Array.from(cards).forEach(card => {
+                            if (card.tagName === 'DIV') {
+                                // Skip empty state messages
+                                const content = card.textContent.toLowerCase();
+                                if (content.includes('belum ada') || content.includes('kosong')) return;
+                                
+                                if (content.includes(filter)) {
+                                    card.style.display = '';
+                                } else {
+                                    card.style.display = 'none';
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+        });
+
         function toggleSidebar() {
             const sidebar = document.getElementById('adminSidebar');
             const overlay = document.getElementById('sidebarOverlay');

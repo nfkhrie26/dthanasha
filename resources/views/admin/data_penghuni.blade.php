@@ -389,9 +389,32 @@
         function filterTabelGender() {
             const filterValue = document.getElementById('filterGender').value;
             const rows = document.querySelectorAll('.penghuni-row');
-            rows.forEach(row => {
+            
+            // For desktop table rows
+            let counterDesktop = 1;
+            const tbodyRows = document.querySelectorAll('tbody .penghuni-row');
+            tbodyRows.forEach(row => {
                 const gender = row.getAttribute('data-gender');
-                row.style.display = (filterValue === 'Semua' || filterValue === gender) ? '' : 'none';
+                if (filterValue === 'Semua' || filterValue === gender) {
+                    row.style.display = '';
+                    const numCell = row.querySelector('td:first-child');
+                    if (numCell) {
+                        numCell.textContent = counterDesktop++;
+                    }
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // For mobile cards
+            const mobileCards = document.querySelectorAll('.sm\\:hidden .penghuni-row');
+            mobileCards.forEach(card => {
+                const gender = card.getAttribute('data-gender');
+                if (filterValue === 'Semua' || filterValue === gender) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
             });
         }
     </script>
