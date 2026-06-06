@@ -22,7 +22,7 @@ class SecurityHeaders
             // Content Security Policy (CSP)
             // Note: In development, Vite might need 'unsafe-inline' and specific ports. 
             // The requested policy is very strict, which is good for production.
-            $response->header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https: ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
+            $response->header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https: ws: wss:; frame-src 'self' https://app.sandbox.midtrans.com https://app.midtrans.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
 
             // Prevent Clickjacking
             $response->header('X-Frame-Options', 'DENY');
