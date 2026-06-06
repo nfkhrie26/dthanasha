@@ -41,6 +41,7 @@ class RiwayatController extends Controller
         $pemasukan = Transaksi::with('tagihan.penghuni')->get()->map(function ($item) {
             return (object) [
                 'id'            => $item->order_id, // ID unik buat tombol hapus/edit
+                'order_id'      => $item->order_id,
                 'keterangan'    => 'Tagihan: ' . $item->order_id,
                 'pihak'         => $item->tagihan?->penghuni?->nama_penghuni ?? '-',
                 'tanggal'       => Carbon::parse($item->created_at), // Atau $item->waktu
@@ -54,6 +55,7 @@ class RiwayatController extends Controller
         $pengeluaran = Pengeluaran::get()->map(function ($item) {
             return (object) [
                 'id'            => $item->id,
+                'order_id'      => '',
                 'keterangan'    => $item->nama_kegiatan,
                 'pihak'         => $item->pihak_tujuan,
                 'tanggal'       => Carbon::parse($item->tanggal),

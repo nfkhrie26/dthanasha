@@ -106,12 +106,8 @@
                     const items = document.querySelectorAll('.searchable-item');
                     items.forEach(item => {
                         const text = item.textContent.toLowerCase();
-                        if (text.includes(filter)) {
-                            // Cek jika item ini juga sedang di-filter oleh sistem lain (seperti filter gender di data penghuni)
-                            // Jika ada atribut data-hide-by-filter, jangan ditampilkan
-                            if (item.getAttribute('data-hide-by-filter') !== 'true') {
-                                item.style.display = '';
-                            }
+                        if (text.includes(filter) && item.getAttribute('data-hide-by-filter') !== 'true') {
+                            item.style.display = '';
                         } else {
                             item.style.display = 'none';
                         }
