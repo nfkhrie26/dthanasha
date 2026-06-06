@@ -21,7 +21,10 @@ class GenerateTagihanBulanan extends Command
     {
         Log::info('Scheduler Tagihan Mulai Berjalan...');
 
-        $penghuniAktif = Penghuni::with('kamar')->whereNotNull(['id_kamar', 'id_user'])->get();
+        $penghuniAktif = Penghuni::with(['kamar', 'user'])
+                                        ->whereNotNull('id_kamar')
+                                        ->whereNotNull('id_user')
+                                        ->get();
 
         $periodeBulanIni = Carbon::now()->translatedFormat('F Y'); 
 
@@ -33,7 +36,6 @@ class GenerateTagihanBulanan extends Command
         $jatuhTempo = Carbon::now()->setDay($tanggalDeadline)->endOfDay();
 
         foreach ($penghuniAktif as $p) {
-            $penghuni = User::where('id', $p->id_user)->first();
             $tagihanSudahAda = Tagihan::where('id_penghuni', $p->id)
                                       ->where('periode_bulan', $periodeBulanIni)
                                       ->exists();
@@ -54,9 +56,7 @@ class GenerateTagihanBulanan extends Command
                 $jumlahDitagih++;
             }
             if ($tagihanNunggak) {
-                $userPenghuni = User::find($p->id_user);
-                
-                $userPenghuni?->update(['is_locked' => true]);
+                $p->user?->update(['is_locked' => true]);
             }
         }
 
