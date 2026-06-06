@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\WaitingListController;
 use App\Http\Controllers\Admin\KamarController;
 use App\Http\Controllers\Admin\PembayaranController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 // ==========================================
 // ROUTE SISI PEMILIK (ADMINISTRATOR)
@@ -95,6 +96,29 @@ Route::middleware(['auth', 'role:penghuni', 'wajib.email'])->group(function () {
     Route::post('/penghuni/submit-keluhan', [KeluhanController::class, 'submitKeluhan'])->name('penghuni.submit-keluhan');
 });
 Route::post('/midtrans/webhook', [PaymentController::class, 'webhook']);
+
+// ================================= CRONJOB ==========================================
+$secret = env('CRON_SECRET_TOKEN', 'buka-kunci');
+
+Route::get('/cron-otomatis/{token}', function ($token) use ($secret) {
+    if ($token !== $secret) {
+        return abort(403, 'Gak boleh masuk!');
+    }
+    
+    Artisan::call('schedule:run');
+    return 'Cron berhasil dijalanin..';
+});
+
+Route::get('/testing-nembak-manual/{token}', function ($token) use ($secret) {
+    if ($token !== $secret) {
+        return abort(403, 'Gak boleh masuk!');
+    }
+
+    Artisan::call('app:generate-tagihan-bulanan');
+    Artisan::call('app:send-payment-reminder');
+    
+    return 'Eksekusi paksa berhasil!';
+});
 
 
 // Route autentikasi bawaan Breeze
