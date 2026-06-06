@@ -77,7 +77,7 @@
                     <option>Expire</option>
                 </select>
                 <button onclick="bukaModalTambah()" class="bg-[#18181B] hover:bg-[#334155] text-white px-5 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-md active:scale-95 flex-1 sm:flex-none justify-center">
-                    <i class="ph ph-plus-circle text-lg"></i> Tambah
+                    <i class="ph ph-plus-circle text-lg"></i> Tambah Pengeluaran
                 </button>
             </div>
         </div>
