@@ -50,11 +50,11 @@
                 <div class="bg-white rounded-3xl card-shadow border border-gray-50 overflow-hidden">
                     <div class="bg-zinc-100 px-6 py-4 border-b border-zinc-200"><span class="font-black text-zinc-900 uppercase tracking-widest text-xs">Transfer Bank</span></div>
                     <div class="p-6 space-y-4">
-                        <div><span class="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1">Bank Tujuan</span><span class="font-bold text-zinc-900 text-lg">Bank BRI</span></div>
+                        <div><span class="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1">Bank Tujuan</span><span class="font-bold text-zinc-900 text-lg">Bank BCA</span></div>
                         <div>
                             <span class="block text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-1">Nomor Rekening</span>
                             <div class="flex items-center gap-4">
-                                <span class="font-black text-zinc-900 text-2xl" id="norek">1234 5678 9012</span>
+                                <span class="font-black text-zinc-900 text-2xl" id="norek">2684040536</span>
                                 <button onclick="salinRekening()" class="bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-zinc-200 transition-all flex items-center gap-1">
                                     <i class="ph ph-copy"></i> <span id="text-salin">Salin</span>
                                 </button>
